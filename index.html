@@ -3,27 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Jeju Island Planner</title>
+    <title>Jeju Travel Planner</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <style>
         :root {
-            --bg-color: #F4F7F9;      /* 莫蘭迪藍灰底 */
-            --header-bg: #5D737E;    /* 莫蘭迪深藍綠 */
+            --bg-color: #F4F7F9;
+            --header-bg: #5D737E;
             --card-bg: #FFFFFF;
             --text-main: #455A64;
             --text-sub: #90A4AE;
-            --accent: #B0C4DE;       /* 莫蘭迪淺藍 */
+            --accent: #B0C4DE;
             --naver-green: #03C75A;
         }
 
         * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
-        body { font-family: 'Noto Sans TC', sans-serif; background: var(--bg-color); color: var(--text-main); margin: 0; padding-bottom: 100px; }
+        body { font-family: 'Noto Sans TC', sans-serif; background: var(--bg-color); color: var(--text-main); margin: 0; padding-bottom: 100px; overflow-x: hidden; }
 
-        /* 頂部導覽列 */
-        header { background: var(--header-bg); padding: 45px 20px 15px; position: sticky; top: 0; z-index: 1000; color: #fff; text-align: center; }
+        /* 頂部導航 */
+        header { background: var(--header-bg); padding: 45px 20px 15px; position: sticky; top: 0; z-index: 100; color: #fff; text-align: center; }
         .app-title { font-family: 'Montserrat', sans-serif; font-size: 1.1rem; font-weight: 700; letter-spacing: 3px; margin-bottom: 15px; }
 
-        /* 日期選擇器 */
         .date-scroller { display: flex; overflow-x: auto; gap: 10px; padding: 5px; scrollbar-width: none; }
         .date-scroller::-webkit-scrollbar { display: none; }
         .date-item {
@@ -31,35 +31,42 @@
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             cursor: pointer; border: none; color: #fff; transition: 0.3s;
         }
-        .date-item.active { background: #fff; color: var(--header-bg); transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .date-item .d-day { font-size: 0.6rem; font-weight: 700; margin-bottom: 2px; }
-        .date-item .d-num { font-size: 1.1rem; font-weight: 700; font-family: 'Montserrat'; }
+        .date-item.active { background: #fff; color: var(--header-bg); transform: scale(1.05); }
 
         .main { padding: 20px; max-width: 500px; margin: 0 auto; }
 
-        /* 天氣欄位 */
-        .weather-info { 
-            display: flex; align-items: center; justify-content: center; gap: 10px;
-            background: #fff; padding: 12px 20px; border-radius: 50px; margin-bottom: 20px;
-            font-size: 0.9rem; font-weight: 500; box-shadow: 0 2px 10px rgba(0,0,0,0.03);
-            border: 1px solid var(--accent);
-        }
-
-        /* 行程卡片 */
+        /* 行程卡片 - 列表樣式 (圖一/三) */
         .event-card {
-            background: var(--card-bg); border-radius: 20px; padding: 18px; margin-bottom: 15px;
-            display: flex; gap: 15px; position: relative; box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            background: var(--card-bg); border-radius: 20px; padding: 20px; margin-bottom: 12px;
+            display: flex; align-items: center; gap: 15px; position: relative; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03); cursor: grab;
+            transition: transform 0.2s;
         }
-        .time-label { font-family: 'Montserrat'; font-size: 0.9rem; font-weight: 700; min-width: 50px; padding-top: 3px; color: var(--header-bg); }
-        .content-box { flex: 1; border-left: 2px solid var(--accent); padding-left: 15px; }
-        .event-tag { font-size: 0.6rem; font-weight: 700; color: var(--text-sub); letter-spacing: 1px; margin-bottom: 4px; display: block; }
-        .event-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 5px; color: var(--text-main); }
-        .event-desc { font-size: 0.85rem; color: var(--text-sub); line-height: 1.4; }
+        .event-card:active { cursor: grabbing; transform: scale(0.98); }
+        .sortable-ghost { opacity: 0.4; background: var(--accent); }
 
-        .map-btn {
-            display: inline-flex; align-items: center; gap: 5px; background: var(--naver-green);
-            color: #fff; text-decoration: none; padding: 8px 18px; border-radius: 12px;
-            font-size: 0.8rem; font-weight: 700; margin-top: 10px;
+        .time-label { font-family: 'Montserrat'; font-size: 0.9rem; font-weight: 700; min-width: 55px; color: var(--header-bg); }
+        .content-box { flex: 1; border-left: 2px solid var(--accent); padding-left: 15px; }
+        .event-title { font-size: 1.05rem; font-weight: 700; color: var(--text-main); }
+        .event-tag { font-size: 0.65rem; color: var(--text-sub); font-weight: 700; text-transform: uppercase; }
+
+        /* 詳情頁面 (圖二) */
+        .detail-view {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #fff; z-index: 2000; overflow-y: auto; padding: 40px 25px;
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+
+        .back-btn { font-size: 1.5rem; cursor: pointer; margin-bottom: 20px; display: inline-block; color: var(--header-bg); }
+        .detail-header-tag { color: var(--text-sub); font-weight: 700; font-size: 0.8rem; letter-spacing: 2px; }
+        .detail-title { font-size: 1.8rem; font-weight: 700; margin: 10px 0 20px; color: var(--text-main); }
+        .detail-desc { line-height: 1.8; color: #555; font-size: 1rem; margin-bottom: 30px; }
+        
+        .map-full-btn {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            background: var(--naver-green); color: #fff; text-decoration: none;
+            padding: 15px; border-radius: 15px; font-weight: 700; width: 100%;
         }
 
         /* 懸浮按鈕 */
@@ -67,91 +74,66 @@
             position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px;
             background: var(--header-bg); color: #fff; border-radius: 50%;
             display: flex; align-items: center; justify-content: center; font-size: 24px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2); cursor: pointer; z-index: 2000;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2); cursor: pointer; z-index: 500;
         }
 
-        /* 彈窗樣式 */
-        .modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); z-index: 3000; align-items: flex-end;
-        }
-        .modal-content {
-            background: #fff; width: 100%; border-radius: 30px 30px 0 0;
-            padding: 30px 25px; animation: slideUp 0.3s ease;
-        }
+        /* 新增行程彈窗 (Modal) */
+        .modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index: 3000; align-items: flex-end; }
+        .modal-content { background:#fff; width:100%; border-radius:30px 30px 0 0; padding:30px 25px; animation: slideUp 0.3s ease; }
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-        .modal-title { font-size: 1.2rem; font-weight: 700; color: var(--header-bg); }
-        .close-modal { font-size: 1.5rem; color: var(--text-sub); cursor: pointer; }
-
-        input, select, textarea {
-            width: 100%; background: #F0F4F7; border: none; padding: 15px;
-            border-radius: 12px; margin-bottom: 15px; font-family: inherit; font-size: 0.9rem; color: var(--text-main);
-        }
-        .save-btn {
-            background: var(--header-bg); color: #fff; border: none; width: 100%;
-            padding: 18px; border-radius: 15px; font-weight: 700; font-size: 1rem;
-        }
-
-        /* 購物圖示 */
-        .shop-icon { position: fixed; bottom: 30px; left: 30px; width: 50px; height: 50px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 15px rgba(0,0,0,0.1); font-size: 20px; border: 1px solid var(--accent); }
+        input, textarea, select { width: 100%; background: #F0F4F7; border: none; padding: 15px; border-radius: 12px; margin-bottom: 12px; font-family: inherit; }
+        .save-btn { background: var(--header-bg); color: #fff; border: none; width: 100%; padding: 18px; border-radius: 15px; font-weight: 700; }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="app-title">JEJU ISLAND</div>
-    <div class="date-scroller">
-        <div class="date-item active" onclick="setDay(1, this)"><span class="d-day">DAY 1</span><span class="d-num">13</span></div>
-        <div class="date-item" onclick="setDay(2, this)"><span class="d-day">DAY 2</span><span class="d-num">14</span></div>
-        <div class="date-item" onclick="setDay(3, this)"><span class="d-day">DAY 3</span><span class="d-num">15</span></div>
-        <div class="date-item" onclick="setDay(4, this)"><span class="d-day">DAY 4</span><span class="d-num">16</span></div>
-        <div class="date-item" onclick="setDay(5, this)"><span class="d-day">DAY 5</span><span class="d-num">17</span></div>
-    </div>
+    <div class="app-title">JEJU PLANNER</div>
+    <div class="date-scroller" id="date-scroller"></div>
 </header>
 
 <div class="main">
-    <div class="weather-info">
-        <span>☀️ 18°C / 22°C</span> | <span>濟州國際機場</span>
-    </div>
-
-    <div id="itinerary-list">
-        </div>
+    <div id="itinerary-list"></div>
 </div>
 
-<div class="shop-icon">🛒</div>
+<div id="detailView" class="detail-view">
+    <span class="back-btn" onclick="closeDetail()">← BACK</span>
+    <div id="detailContent"></div>
+</div>
+
 <div class="fab" onclick="openModal()">＋</div>
 
 <div id="addModal" class="modal">
     <div class="modal-content">
-        <div class="modal-header">
-            <span class="modal-title">NEW ITEM</span>
-            <span class="close-modal" onclick="closeModal()">×</span>
-        </div>
-        <input type="text" id="in-time" placeholder="TIME (例如 10:00)">
+        <h3 style="margin-top:0">New Itinerary</h3>
+        <input type="text" id="in-time" placeholder="Time (e.g. 10:30)">
+        <input type="text" id="in-title" placeholder="Location Name">
         <select id="in-cat">
-            <option value="SIGHTSEEING">SIGHTSEEING (景點)</option>
-            <option value="FOOD">FOOD (美食)</option>
-            <option value="ACTIVITY">ACTIVITY (體驗)</option>
-            <option value="SHOPPING">SHOPPING (購物)</option>
+            <option value="Sightseeing">Sightseeing</option>
+            <option value="Food">Food</option>
+            <option value="Activity">Activity</option>
         </select>
-        <input type="text" id="in-title" placeholder="LOCATION NAME">
-        <textarea id="in-desc" rows="3" placeholder="SHORT DESCRIPTION"></textarea>
-        <button class="save-btn" onclick="saveItem()">儲存行程</button>
+        <textarea id="in-desc" rows="4" placeholder="Description..."></textarea>
+        <button class="save-btn" onclick="saveItem()">Add to Schedule</button>
+        <button onclick="closeModal()" style="background:none; border:none; width:100%; margin-top:10px; color:var(--text-sub)">Cancel</button>
     </div>
 </div>
 
 <script>
     let currentDay = 1;
-    // 預設內容改為濟州島行程
-    let tripData = JSON.parse(localStorage.getItem('jejuPlanner')) || {
+    let tripData = JSON.parse(localStorage.getItem('jejuPro')) || {
         1: [
-            {time:'14:00', cat:'SIGHTSEEING', title:'龍頭岩 Yongduam', desc:'濟州市地標，海邊的黑礁石景觀。'},
-            {time:'18:00', cat:'FOOD', title:'濟州黑豬肉街', desc:'必吃的道地黑豬肉燒烤料理。'}
+            {time:'14:00', cat:'Sightseeing', title:'龍頭岩 Yongduam', desc:'濟州市地標，海邊奇石觀賞區。'},
+            {time:'18:00', cat:'Food', title:'黑豬肉一條街', desc:'體驗濟州島最道地的烤肉文化。'}
         ],
         2: [], 3: [], 4: [], 5: []
     };
+
+    // 初始化日期列
+    const scroller = document.getElementById('date-scroller');
+    for(let i=1; i<=5; i++) {
+        scroller.innerHTML += `<div class="date-item ${i==1?'active':''}" onclick="setDay(${i}, this)"><span class="d-day">DAY</span><span style="font-size:1.1rem; font-weight:700">${i}</span></div>`;
+    }
 
     function setDay(day, el) {
         currentDay = day;
@@ -160,36 +142,61 @@
         render();
     }
 
-    function openModal() { document.getElementById('addModal').style.display = 'flex'; }
-    function closeModal() { document.getElementById('addModal').style.display = 'none'; }
-
-    function saveItem() {
-        const item = {
-            time: document.getElementById('in-time').value,
-            cat: document.getElementById('in-cat').value,
-            title: document.getElementById('in-title').value,
-            desc: document.getElementById('in-desc').value
-        };
-        if(!item.title) return;
-        tripData[currentDay].push(item);
-        localStorage.setItem('jejuPlanner', JSON.stringify(tripData));
-        closeModal();
-        render();
-    }
+    // 初始化拖拽功能 (SortableJS)
+    const listEl = document.getElementById('itinerary-list');
+    Sortable.create(listEl, {
+        animation: 150,
+        ghostClass: 'sortable-ghost',
+        onEnd: function() {
+            // 當拖拽結束，更新數據順序
+            const cards = listEl.querySelectorAll('.event-card');
+            let newData = [];
+            cards.forEach(card => newData.push(JSON.parse(card.dataset.info)));
+            tripData[currentDay] = newData;
+            localStorage.setItem('jejuPro', JSON.stringify(tripData));
+        }
+    });
 
     function render() {
-        const list = document.getElementById('itinerary-list');
-        list.innerHTML = tripData[currentDay].map((item, index) => `
-            <div class="event-card">
+        listEl.innerHTML = tripData[currentDay].map((item, index) => `
+            <div class="event-card" data-info='${JSON.stringify(item)}' onclick="openDetail(${index})">
                 <div class="time-label">${item.time}</div>
                 <div class="content-box">
                     <span class="event-tag">${item.cat}</span>
                     <div class="event-title">${item.title}</div>
-                    <p class="event-desc">${item.desc}</p>
-                    <a href="https://map.naver.com/v5/search/${encodeURIComponent(item.title)}" target="_blank" class="map-btn">📍 開啟 Naver Map</a>
                 </div>
             </div>
         `).join('');
+    }
+
+    function openDetail(index) {
+        const item = tripData[currentDay][index];
+        const content = document.getElementById('detailContent');
+        content.innerHTML = `
+            <span class="detail-header-tag">${item.cat}</span>
+            <h1 class="detail-title">${item.title}</h1>
+            <p class="detail-desc">${item.desc || '暫無詳細描述。'}</p>
+            <a href="https://map.naver.com/v5/search/${encodeURIComponent(item.title)}" target="_blank" class="map-full-btn">📍 Open in Naver Map</a>
+        `;
+        document.getElementById('detailView').style.display = 'block';
+    }
+
+    function closeDetail() { document.getElementById('detailView').style.display = 'none'; }
+    function openModal() { document.getElementById('addModal').style.display = 'flex'; }
+    function closeModal() { document.getElementById('addModal').style.display = 'none'; }
+
+    function saveItem() {
+        const newItem = {
+            time: document.getElementById('in-time').value,
+            title: document.getElementById('in-title').value,
+            cat: document.getElementById('in-cat').value,
+            desc: document.getElementById('in-desc').value
+        };
+        if(!newItem.title) return;
+        tripData[currentDay].push(newItem);
+        localStorage.setItem('jejuPro', JSON.stringify(tripData));
+        closeModal();
+        render();
     }
 
     render();
