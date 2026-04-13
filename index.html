@@ -3,75 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Jeju Travel App</title>
+    <title>Jeju Travel Planner</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #F8F9FB;
+            --bg: #F2F2F7;
             --card: #FFFFFF;
             --primary: #1C1C1E;
             --sub: #8E8E93;
+            --accent: #007AFF; /* 蘋果藍 */
             --tag-act: #45B6C4;
             --tag-food: #FF9F0A;
             --naver: #03C75A;
+            --danger: #FF3B30;
         }
 
         * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
-        body { font-family: 'Noto Sans TC', sans-serif; background: var(--bg); color: var(--primary); margin: 0; overflow-x: hidden; }
+        body { font-family: 'Noto Sans TC', sans-serif; background: var(--bg); color: var(--primary); margin: 0; padding-bottom: 100px; }
 
         header { background: var(--card); padding: 50px 0 15px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 1px 10px rgba(0,0,0,0.03); }
         .app-title { text-align: center; font-family: 'Montserrat', sans-serif; font-size: 1.2rem; font-weight: 700; letter-spacing: 2px; margin-bottom: 20px; }
 
-        .date-scroller { display: flex; overflow-x: auto; padding: 0 20px; gap: 12px; scrollbar-width: none; }
-        .date-scroller::-webkit-scrollbar { display: none; }
+        /* 導航切換 */
+        .tab-nav { display: flex; justify-content: center; gap: 20px; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        .tab-btn { background: none; border: none; font-weight: 700; color: var(--sub); cursor: pointer; font-size: 0.9rem; }
+        .tab-btn.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
 
+        .date-scroller { display: flex; overflow-x: auto; padding: 0 20px; gap: 12px; scrollbar-width: none; margin-bottom: 10px; }
+        .date-scroller::-webkit-scrollbar { display: none; }
         .date-item {
-            min-width: 65px; height: 75px; background: #F2F2F7; border-radius: 16px;
+            min-width: 65px; height: 75px; background: #E5E5EA; border-radius: 16px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             cursor: pointer; border: none; transition: 0.3s;
         }
         .date-item.active { background: var(--primary); color: #fff; transform: scale(1.05); }
-        .date-item span { display: block; }
         .date-item .d-day { font-size: 0.65rem; margin-bottom: 4px; opacity: 0.7; }
         .date-item .d-num { font-size: 1rem; font-weight: 700; font-family: 'Montserrat'; }
 
         .main { padding: 20px; max-width: 500px; margin: 0 auto; }
-        .day-panel { display: none; animation: fadeIn 0.4s ease forwards; }
-        .day-panel.active { display: block; }
+        .view-panel { display: none; }
+        .view-panel.active { display: block; animation: fadeIn 0.4s ease; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 天氣小工具修復版 */
-        .weather-box {
-            background: #fff; border-radius: 24px; margin-bottom: 25px; 
-            padding: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.04);
-        }
-
-        .cover-img { width: 100%; height: 200px; object-fit: cover; border-radius: 24px; margin-bottom: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
-
-        .card {
-            background: var(--card); border-radius: 22px; padding: 20px; margin-bottom: 16px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.02); display: flex; gap: 15px; border: 1px solid #f8f8f8;
-        }
+        /* 行程卡片 */
+        .card { background: var(--card); border-radius: 22px; padding: 20px; margin-bottom: 16px; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.02); display: flex; gap: 15px; }
         .time-col { font-family: 'Montserrat'; font-size: 0.85rem; font-weight: 700; min-width: 45px; }
-        .tag { font-size: 0.6rem; font-weight: 700; padding: 3px 10px; border-radius: 8px; color: #fff; display: inline-block; margin-bottom: 8px; }
-        .tag-act { background: var(--tag-act); }
-        .tag-food { background: var(--tag-food); }
+        .info-col { flex: 1; }
+        .title { font-size: 1.05rem; font-weight: 700; margin-bottom: 4px; display: block; }
+        .desc { font-size: 0.85rem; color: var(--sub); line-height: 1.5; margin-bottom: 10px; }
+        .del-btn { position: absolute; top: 15px; right: 15px; color: var(--danger); border: none; background: none; font-size: 1.2rem; cursor: pointer; }
 
-        .title { font-size: 1.05rem; font-weight: 700; margin-bottom: 6px; display: block; }
-        .desc { font-size: 0.85rem; color: var(--sub); line-height: 1.5; margin-bottom: 12px; }
+        /* 購物清單樣式 */
+        .shop-item { background: #fff; padding: 15px; border-radius: 15px; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+        .shop-item input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--naver); }
+        .shop-item.checked span { text-decoration: line-through; color: var(--sub); }
+        .shop-item span { flex: 1; font-weight: 500; }
 
-        .naver-link {
-            display: inline-flex; align-items: center; gap: 6px; color: var(--naver);
-            font-size: 0.8rem; font-weight: 700; text-decoration: none;
-            background: rgba(3, 199, 90, 0.1); padding: 8px 16px; border-radius: 100px;
-        }
+        /* 控制按鈕 */
+        .add-btn { width: 100%; padding: 15px; background: var(--primary); color: #fff; border: none; border-radius: 15px; font-weight: 700; margin-top: 10px; cursor: pointer; }
+        .input-group { background: #fff; padding: 15px; border-radius: 15px; margin-bottom: 20px; display: flex; flex-direction: column; gap: 10px; }
+        input, textarea { border: 1px solid #eee; padding: 10px; border-radius: 8px; font-family: inherit; }
+
+        .naver-link { display: inline-flex; align-items: center; gap: 6px; color: var(--naver); font-size: 0.8rem; font-weight: 700; text-decoration: none; background: rgba(3, 199, 90, 0.1); padding: 8px 16px; border-radius: 100px; }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="app-title">JEJU TRAVEL</div>
-    <div class="date-scroller">
+    <div class="app-title">JEJU PLANNER</div>
+    <div class="tab-nav">
+        <button class="tab-btn active" onclick="switchTab('itinerary', this)">行程</button>
+        <button class="tab-btn" onclick="switchTab('shopping', this)">購物清單</button>
+    </div>
+    <div id="date-scroller" class="date-scroller">
         <button class="date-item active" onclick="changeDay(1, this)"><span class="d-day">DAY 1</span><span class="d-num">05.13</span></button>
         <button class="date-item" onclick="changeDay(2, this)"><span class="d-day">DAY 2</span><span class="d-num">05.14</span></button>
         <button class="date-item" onclick="changeDay(3, this)"><span class="d-day">DAY 3</span><span class="d-num">05.15</span></button>
@@ -81,47 +85,107 @@
 </header>
 
 <div class="main">
-    <div class="weather-box">
-        <a class="weatherwidget-io" href="https://forecast7.com/zh-tw/33d49126d53/jeju-si/" data-label_1="JEJU" data-label_2="WEATHER" data-font="Noto Sans TC" data-icons="Climacons Animated" data-mode="Current" data-theme="pure">JEJU WEATHER</a>
-        <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');</script>
+    <div id="itinerary-view" class="view-panel active">
+        <div class="input-group">
+            <input type="text" id="new-time" placeholder="時間 (例如 10:00)">
+            <input type="text" id="new-title" placeholder="景點名稱">
+            <textarea id="new-desc" placeholder="簡單描述內容..."></textarea>
+            <button class="add-btn" onclick="addEvent()">＋ 新增行程</button>
+        </div>
+        <div id="events-list">
+            </div>
     </div>
 
-    <div id="day1" class="day-panel active">
-        <img src="https://images.unsplash.com/photo-1510618033230-019323735749?auto=format&fit=crop&w=800" class="cover-img">
-        <div class="card">
-            <div class="time-col">14:00</div>
-            <div class="info-col">
-                <span class="tag tag-act">ACTIVITY</span>
-                <span class="title">龍頭岩 Yongduam</span>
-                <p class="desc">濟州市地標，漢潭旁的奇特黑石，海景非常壯觀。</p>
-                <a href="https://map.naver.com/v5/search/Yongduam%20Rock" target="_blank" class="naver-link">📍 Naver Map</a>
-            </div>
+    <div id="shopping-view" class="view-panel">
+        <div class="input-group" style="flex-direction: row;">
+            <input type="text" id="new-shop-item" placeholder="想要買的東西..." style="flex: 1;">
+            <button class="add-btn" onclick="addShopItem()" style="width: auto; margin:0;">＋</button>
         </div>
-    </div>
-
-    <div id="day2" class="day-panel">
-        <img src="https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=800" class="cover-img">
-        <div class="card">
-            <div class="time-col">09:30</div>
-            <div class="info-col">
-                <span class="tag tag-act">ACTIVITY</span>
-                <span class="title">城山日出峰</span>
-                <p class="desc">世界自然遺產，火山口頂部的壯闊景色。</p>
-                <a href="https://map.naver.com/v5/search/Seongsan%20Ilchulbong" target="_blank" class="naver-link">📍 Naver Map</a>
+        <div id="shopping-list">
             </div>
-        </div>
     </div>
 </div>
 
 <script>
-    function changeDay(num, btn) {
+    let currentDay = 1;
+    let data = JSON.parse(localStorage.getItem('jejuData')) || {
+        itinerary: { 1: [], 2: [], 3: [], 4: [], 5: [] },
+        shopping: []
+    };
+
+    function save() { localStorage.setItem('jejuData', JSON.stringify(data)); render(); }
+
+    function switchTab(tab, btn) {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        document.querySelectorAll('.view-panel').forEach(v => v.classList.remove('active'));
+        document.getElementById(tab + '-view').classList.add('active');
+        document.getElementById('date-scroller').style.display = (tab === 'itinerary') ? 'flex' : 'none';
+    }
+
+    function changeDay(day, btn) {
+        currentDay = day;
         document.querySelectorAll('.date-item').forEach(i => i.classList.remove('active'));
         btn.classList.add('active');
-        document.querySelectorAll('.day-panel').forEach(p => p.classList.remove('active'));
-        const target = document.getElementById('day' + num);
-        if(target) target.classList.add('active');
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+        render();
     }
+
+    function addEvent() {
+        const time = document.getElementById('new-time').value;
+        const title = document.getElementById('new-title').value;
+        const desc = document.getElementById('new-desc').value;
+        if (!title) return;
+        data.itinerary[currentDay].push({ time, title, desc });
+        document.getElementById('new-time').value = '';
+        document.getElementById('new-title').value = '';
+        document.getElementById('new-desc').value = '';
+        save();
+    }
+
+    function deleteEvent(index) {
+        data.itinerary[currentDay].splice(index, 1);
+        save();
+    }
+
+    function addShopItem() {
+        const text = document.getElementById('new-shop-item').value;
+        if (!text) return;
+        data.shopping.push({ text, checked: false });
+        document.getElementById('new-shop-item').value = '';
+        save();
+    }
+
+    function toggleShop(index) {
+        data.shopping[index].checked = !data.shopping[index].checked;
+        save();
+    }
+
+    function render() {
+        // 渲染行程
+        const list = document.getElementById('events-list');
+        list.innerHTML = data.itinerary[currentDay].map((ev, i) => `
+            <div class="card">
+                <div class="time-col">${ev.time}</div>
+                <div class="info-col">
+                    <span class="title">${ev.title}</span>
+                    <p class="desc">${ev.desc}</p>
+                    <a href="https://map.naver.com/v5/search/${encodeURIComponent(ev.title)}" target="_blank" class="naver-link">📍 Naver Map</a>
+                </div>
+                <button class="del-btn" onclick="deleteEvent(${i})">×</button>
+            </div>
+        `).join('');
+
+        // 渲染購物清單
+        const sList = document.getElementById('shopping-list');
+        sList.innerHTML = data.shopping.map((item, i) => `
+            <div class="shop-item ${item.checked ? 'checked' : ''}">
+                <input type="checkbox" ${item.checked ? 'checked' : ''} onchange="toggleShop(${i})">
+                <span>${item.text}</span>
+            </div>
+        `).join('');
+    }
+
+    render();
 </script>
 
 </body>
