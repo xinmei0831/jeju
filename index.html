@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Seoul Trip Planner</title>
+    <title>Jeju Island Planner</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #F7F3F0;      /* 影片中的米色背景 */
-            --header-bg: #4A3427;    /* 影片中的深咖頂欄 */
+            --bg-color: #F4F7F9;      /* 莫蘭迪藍灰底 */
+            --header-bg: #5D737E;    /* 莫蘭迪深藍綠 */
             --card-bg: #FFFFFF;
-            --text-main: #4A3427;
-            --text-sub: #A6968A;
-            --accent: #D9C5B2;       /* 按鈕淺咖 */
+            --text-main: #455A64;
+            --text-sub: #90A4AE;
+            --accent: #B0C4DE;       /* 莫蘭迪淺藍 */
             --naver-green: #03C75A;
         }
 
@@ -23,54 +23,54 @@
         header { background: var(--header-bg); padding: 45px 20px 15px; position: sticky; top: 0; z-index: 1000; color: #fff; text-align: center; }
         .app-title { font-family: 'Montserrat', sans-serif; font-size: 1.1rem; font-weight: 700; letter-spacing: 3px; margin-bottom: 15px; }
 
-        /* 日期選擇器 - 影片風格 */
+        /* 日期選擇器 */
         .date-scroller { display: flex; overflow-x: auto; gap: 10px; padding: 5px; scrollbar-width: none; }
         .date-scroller::-webkit-scrollbar { display: none; }
         .date-item {
-            min-width: 70px; height: 85px; background: #E8E0D9; border-radius: 18px;
+            min-width: 70px; height: 85px; background: rgba(255,255,255,0.2); border-radius: 18px;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; border: none; color: var(--text-main); transition: 0.3s;
+            cursor: pointer; border: none; color: #fff; transition: 0.3s;
         }
-        .date-item.active { background: var(--text-main); color: #fff; transform: translateY(-5px); box-shadow: 0 5px 15px rgba(74,52,39,0.2); }
+        .date-item.active { background: #fff; color: var(--header-bg); transform: translateY(-5px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
         .date-item .d-day { font-size: 0.6rem; font-weight: 700; margin-bottom: 2px; }
         .date-item .d-num { font-size: 1.1rem; font-weight: 700; font-family: 'Montserrat'; }
 
         .main { padding: 20px; max-width: 500px; margin: 0 auto; }
 
-        /* 天氣區域 - 影片中的膠囊感 */
+        /* 天氣欄位 */
         .weather-info { 
             display: flex; align-items: center; justify-content: center; gap: 10px;
-            background: #fff; padding: 10px 20px; border-radius: 50px; margin-bottom: 20px;
+            background: #fff; padding: 12px 20px; border-radius: 50px; margin-bottom: 20px;
             font-size: 0.9rem; font-weight: 500; box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+            border: 1px solid var(--accent);
         }
 
-        /* 行程卡片 - 影片樣式 */
+        /* 行程卡片 */
         .event-card {
             background: var(--card-bg); border-radius: 20px; padding: 18px; margin-bottom: 15px;
             display: flex; gap: 15px; position: relative; box-shadow: 0 4px 20px rgba(0,0,0,0.03);
         }
-        .time-label { font-family: 'Montserrat'; font-size: 0.9rem; font-weight: 700; min-width: 50px; padding-top: 3px; }
+        .time-label { font-family: 'Montserrat'; font-size: 0.9rem; font-weight: 700; min-width: 50px; padding-top: 3px; color: var(--header-bg); }
         .content-box { flex: 1; border-left: 2px solid var(--accent); padding-left: 15px; }
         .event-tag { font-size: 0.6rem; font-weight: 700; color: var(--text-sub); letter-spacing: 1px; margin-bottom: 4px; display: block; }
         .event-title { font-size: 1.05rem; font-weight: 700; margin-bottom: 5px; color: var(--text-main); }
         .event-desc { font-size: 0.85rem; color: var(--text-sub); line-height: 1.4; }
 
-        /* Naver Map 按鈕 */
         .map-btn {
             display: inline-flex; align-items: center; gap: 5px; background: var(--naver-green);
             color: #fff; text-decoration: none; padding: 8px 18px; border-radius: 12px;
             font-size: 0.8rem; font-weight: 700; margin-top: 10px;
         }
 
-        /* 懸浮新增按鈕 */
+        /* 懸浮按鈕 */
         .fab {
             position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px;
-            background: var(--text-main); color: #fff; border-radius: 50%;
+            background: var(--header-bg); color: #fff; border-radius: 50%;
             display: flex; align-items: center; justify-content: center; font-size: 24px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.2); cursor: pointer; z-index: 2000;
         }
 
-        /* 彈出視窗 (Modal) */
+        /* 彈窗樣式 */
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.5); z-index: 3000; align-items: flex-end;
@@ -82,38 +82,38 @@
         @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
         
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-        .modal-title { font-size: 1.2rem; font-weight: 700; letter-spacing: 1px; }
-        .close-modal { font-size: 1.5rem; cursor: pointer; }
+        .modal-title { font-size: 1.2rem; font-weight: 700; color: var(--header-bg); }
+        .close-modal { font-size: 1.5rem; color: var(--text-sub); cursor: pointer; }
 
         input, select, textarea {
-            width: 100%; background: #F7F3F0; border: none; padding: 15px;
-            border-radius: 12px; margin-bottom: 15px; font-family: inherit; font-size: 0.9rem;
+            width: 100%; background: #F0F4F7; border: none; padding: 15px;
+            border-radius: 12px; margin-bottom: 15px; font-family: inherit; font-size: 0.9rem; color: var(--text-main);
         }
         .save-btn {
-            background: var(--text-main); color: #fff; border: none; width: 100%;
+            background: var(--header-bg); color: #fff; border: none; width: 100%;
             padding: 18px; border-radius: 15px; font-weight: 700; font-size: 1rem;
         }
 
-        /* 購物清單小標誌 */
-        .shop-icon { position: fixed; bottom: 30px; left: 30px; width: 50px; height: 50px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        /* 購物圖示 */
+        .shop-icon { position: fixed; bottom: 30px; left: 30px; width: 50px; height: 50px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 15px rgba(0,0,0,0.1); font-size: 20px; border: 1px solid var(--accent); }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="app-title">SEOUL TRIP</div>
+    <div class="app-title">JEJU ISLAND</div>
     <div class="date-scroller">
-        <div class="date-item active" onclick="setDay(1, this)"><span class="d-day">DAY 1</span><span class="d-num">24</span></div>
-        <div class="date-item" onclick="setDay(2, this)"><span class="d-day">DAY 2</span><span class="d-num">25</span></div>
-        <div class="date-item" onclick="setDay(3, this)"><span class="d-day">DAY 3</span><span class="d-num">26</span></div>
-        <div class="date-item" onclick="setDay(4, this)"><span class="d-day">DAY 4</span><span class="d-num">27</span></div>
-        <div class="date-item" onclick="setDay(5, this)"><span class="d-day">DAY 5</span><span class="d-num">28</span></div>
+        <div class="date-item active" onclick="setDay(1, this)"><span class="d-day">DAY 1</span><span class="d-num">13</span></div>
+        <div class="date-item" onclick="setDay(2, this)"><span class="d-day">DAY 2</span><span class="d-num">14</span></div>
+        <div class="date-item" onclick="setDay(3, this)"><span class="d-day">DAY 3</span><span class="d-num">15</span></div>
+        <div class="date-item" onclick="setDay(4, this)"><span class="d-day">DAY 4</span><span class="d-num">16</span></div>
+        <div class="date-item" onclick="setDay(5, this)"><span class="d-day">DAY 5</span><span class="d-num">17</span></div>
     </div>
 </header>
 
 <div class="main">
     <div class="weather-info">
-        <span>☁️ 10.9°C</span> | <span>首爾特別市</span>
+        <span>☀️ 18°C / 22°C</span> | <span>濟州國際機場</span>
     </div>
 
     <div id="itinerary-list">
@@ -129,22 +129,27 @@
             <span class="modal-title">NEW ITEM</span>
             <span class="close-modal" onclick="closeModal()">×</span>
         </div>
-        <input type="text" id="in-time" placeholder="TIME (例如 14:00)">
+        <input type="text" id="in-time" placeholder="TIME (例如 10:00)">
         <select id="in-cat">
             <option value="SIGHTSEEING">SIGHTSEEING (景點)</option>
             <option value="FOOD">FOOD (美食)</option>
+            <option value="ACTIVITY">ACTIVITY (體驗)</option>
             <option value="SHOPPING">SHOPPING (購物)</option>
         </select>
         <input type="text" id="in-title" placeholder="LOCATION NAME">
-        <textarea id="in-desc" rows="3" placeholder="DESCRIPTION"></textarea>
+        <textarea id="in-desc" rows="3" placeholder="SHORT DESCRIPTION"></textarea>
         <button class="save-btn" onclick="saveItem()">儲存行程</button>
     </div>
 </div>
 
 <script>
     let currentDay = 1;
-    let tripData = JSON.parse(localStorage.getItem('seoulTrip')) || {
-        1: [{time:'14:00', cat:'FOOD', title:'LowKey Seongsu', desc:'首爾聖水洞超人氣咖啡廳'}],
+    // 預設內容改為濟州島行程
+    let tripData = JSON.parse(localStorage.getItem('jejuPlanner')) || {
+        1: [
+            {time:'14:00', cat:'SIGHTSEEING', title:'龍頭岩 Yongduam', desc:'濟州市地標，海邊的黑礁石景觀。'},
+            {time:'18:00', cat:'FOOD', title:'濟州黑豬肉街', desc:'必吃的道地黑豬肉燒烤料理。'}
+        ],
         2: [], 3: [], 4: [], 5: []
     };
 
@@ -167,7 +172,7 @@
         };
         if(!item.title) return;
         tripData[currentDay].push(item);
-        localStorage.setItem('seoulTrip', JSON.stringify(tripData));
+        localStorage.setItem('jejuPlanner', JSON.stringify(tripData));
         closeModal();
         render();
     }
