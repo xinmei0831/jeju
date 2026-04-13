@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jeju Trip | 濟州島行程表</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #F9F8F6;
+            --accent-color: #8E7F71;
+            --text-main: #333333;
+            --text-sub: #888888;
+            --white: #ffffff;
+        }
+        body { font-family: 'Noto Sans TC', sans-serif; background-color: var(--bg-color); color: var(--text-main); margin: 0; display: flex; flex-direction: column; align-items: center; }
+        header { text-align: center; padding: 60px 20px 30px; }
+        h1 { font-weight: 300; letter-spacing: 5px; margin: 0; font-size: 1.5rem; color: var(--accent-color); }
+        .nav-container { position: sticky; top: 0; background: rgba(249, 248, 246, 0.95); width: 100%; display: flex; justify-content: center; border-bottom: 1px solid #eee; z-index: 1000; }
+        .date-nav { display: flex; gap: 15px; padding: 15px 0; }
+        .date-btn { cursor: pointer; font-size: 0.8rem; color: var(--text-sub); border: none; background: none; padding: 5px 10px; }
+        .date-btn.active { color: var(--accent-color); border-bottom: 1px solid var(--accent-color); font-weight: 500; }
+        .main-content { width: 90%; max-width: 500px; padding: 30px 0; }
+        .day-section { display: none; }
+        .day-section.active { display: block; animation: fadeIn 0.6s; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .weather-info { font-size: 0.8rem; color: var(--accent-color); background: var(--white); padding: 10px; border-radius: 4px; margin-bottom: 25px; text-align: center; border: 1px solid #f0efed; }
+        .item { margin-bottom: 30px; position: relative; padding-left: 20px; border-left: 1px solid #eee; }
+        .title { font-size: 1rem; font-weight: 500; display: block; margin-bottom: 5px; }
+        .memo { font-size: 0.85rem; color: #777; line-height: 1.7; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>JEJU ISLAND</h1>
+    <div style="font-size: 0.7rem; margin-top: 10px; color: #bbb;">MEMORIES IN KOREA</div>
+</header>
+
+<div class="nav-container">
+    <div class="date-nav">
+        <button class="date-btn active" onclick="openDay(event, 'day1')">DAY 1</button>
+        <button class="date-btn" onclick="openDay(event, 'day2')">DAY 2</button>
+        <button class="date-btn" onclick="openDay(event, 'day3')">DAY 3</button>
+        <button class="date-btn" onclick="openDay(event, 'day4')">DAY 4</button>
+        <button class="date-btn" onclick="openDay(event, 'day5')">DAY 5</button>
+    </div>
+</div>
+
+<div class="main-content">
+    <div id="day1" class="day-section active">
+        <div class="weather-info">🌤️ 16°C / 22°C · 濟州國際機場</div>
+        <div class="item">
+            <span class="title">抵達與初見濟州</span>
+            <span class="memo">在此填寫第一天的景點細節...</span>
+        </div>
+    </div>
+
+    <div id="day2" class="day-section">
+        <div class="weather-info">☀️ 18°C / 24°C · 晴朗</div>
+        <div class="item">
+            <span class="title">東部風光探索</span>
+            <span class="memo">在此填寫第二天的景點細節...</span>
+        </div>
+    </div>
+    
+    </div>
+
+<script>
+    function openDay(evt, dayName) {
+        var i, dayContent, dateBtn;
+        dayContent = document.getElementsByClassName("day-section");
+        for (i = 0; i < dayContent.length; i++) {
+            dayContent[i].style.display = "none";
+            dayContent[i].classList.remove("active");
+        }
+        dateBtn = document.getElementsByClassName("date-btn");
+        for (i = 0; i < dateBtn.length; i++) {
+            dateBtn[i].className = dateBtn[i].className.replace(" active", "");
+        }
+        document.getElementById(dayName).style.display = "block";
+        setTimeout(() => { document.getElementById(dayName).classList.add("active"); }, 10);
+        evt.currentTarget.className += " active";
+    }
+</script>
+
+</body>
+</html>
