@@ -3,38 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jeju Trip | 濟州島行程表</title>
+    <title>Jeju Island | 濟州行程</title>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-color: #F9F8F6;
-            --accent-color: #8E7F71;
-            --text-main: #333333;
-            --text-sub: #888888;
-            --white: #ffffff;
-        }
-        body { font-family: 'Noto Sans TC', sans-serif; background-color: var(--bg-color); color: var(--text-main); margin: 0; display: flex; flex-direction: column; align-items: center; }
-        header { text-align: center; padding: 60px 20px 30px; }
-        h1 { font-weight: 300; letter-spacing: 5px; margin: 0; font-size: 1.5rem; color: var(--accent-color); }
-        .nav-container { position: sticky; top: 0; background: rgba(249, 248, 246, 0.95); width: 100%; display: flex; justify-content: center; border-bottom: 1px solid #eee; z-index: 1000; }
-        .date-nav { display: flex; gap: 15px; padding: 15px 0; }
-        .date-btn { cursor: pointer; font-size: 0.8rem; color: var(--text-sub); border: none; background: none; padding: 5px 10px; }
-        .date-btn.active { color: var(--accent-color); border-bottom: 1px solid var(--accent-color); font-weight: 500; }
+        :root { --bg: #F9F8F6; --accent: #8E7F71; --text: #333; --sub: #888; }
+        body { font-family: 'Noto Sans TC', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; flex-direction: column; align-items: center; }
+        header { text-align: center; padding: 60px 20px 30px; letter-spacing: 5px; }
+        .nav-container { position: sticky; top: 0; background: rgba(249,248,246,0.95); width: 100%; display: flex; justify-content: center; border-bottom: 1px solid #eee; z-index: 1000; }
+        .date-nav { display: flex; gap: 10px; padding: 15px 0; }
+        .date-btn { cursor: pointer; font-size: 0.75rem; color: var(--sub); border: none; background: none; padding: 5px 8px; transition: 0.3s; }
+        .date-btn.active { color: var(--accent); border-bottom: 1px solid var(--accent); font-weight: 500; }
         .main-content { width: 90%; max-width: 500px; padding: 30px 0; }
-        .day-section { display: none; }
-        .day-section.active { display: block; animation: fadeIn 0.6s; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-        .weather-info { font-size: 0.8rem; color: var(--accent-color); background: var(--white); padding: 10px; border-radius: 4px; margin-bottom: 25px; text-align: center; border: 1px solid #f0efed; }
-        .item { margin-bottom: 30px; position: relative; padding-left: 20px; border-left: 1px solid #eee; }
-        .title { font-size: 1rem; font-weight: 500; display: block; margin-bottom: 5px; }
+        .day-section { display: none; animation: fadeIn 0.5s; }
+        .day-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .weather { font-size: 0.8rem; color: var(--accent); background: #fff; padding: 12px; border-radius: 4px; margin-bottom: 25px; text-align: center; border: 1px solid #f0efed; }
+        .item { margin-bottom: 25px; padding-left: 20px; border-left: 1px solid #eee; }
+        .title { font-size: 1rem; font-weight: 500; display: block; margin-bottom: 5px; color: #555; }
         .memo { font-size: 0.85rem; color: #777; line-height: 1.7; }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>JEJU ISLAND</h1>
-    <div style="font-size: 0.7rem; margin-top: 10px; color: #bbb;">MEMORIES IN KOREA</div>
+    <h1 style="font-weight:300; font-size:1.5rem; margin:0;">JEJU ISLAND</h1>
+    <div style="font-size:0.7rem; color:#bbb; margin-top:10px;">5-DAY ITINERARY</div>
 </header>
 
 <div class="nav-container">
@@ -49,40 +42,48 @@
 
 <div class="main-content">
     <div id="day1" class="day-section active">
-        <div class="weather-info">🌤️ 16°C / 22°C · 濟州國際機場</div>
-        <div class="item">
-            <span class="title">抵達與初見濟州</span>
-            <span class="memo">在此填寫第一天的景點細節...</span>
-        </div>
+        <div class="weather">🌤️ 14°C / 20°C · 抵達濟州</div>
+        <div class="item"><span class="title">台北 ✈️ 濟州國際機場</span><span class="memo">準備開啟韓式浪漫之旅，辦理入境並前往市區。</span></div>
+        <div class="item"><span class="title">龍頭岩 & 龍淵吊橋</span><span class="memo">欣賞奇岩怪石與絕美海景。</span></div>
     </div>
 
     <div id="day2" class="day-section">
-        <div class="weather-info">☀️ 18°C / 24°C · 晴朗</div>
-        <div class="item">
-            <span class="title">東部風光探索</span>
-            <span class="memo">在此填寫第二天的景點細節...</span>
-        </div>
+        <div class="weather">☀️ 15°C / 22°C · 東部自然美景</div>
+        <div class="item"><span class="title">城山日出峰</span><span class="memo">聯合國教科文組織世界自然遺產，俯瞰壯闊海景。</span></div>
+        <div class="item"><span class="title">涉地可支</span><span class="memo">熱門韓劇拍攝地，欣賞唯美教堂與燈塔。</span></div>
+        <div class="item"><span class="title">城邑民俗村</span><span class="memo">體驗濟州傳統草屋與在地文化。</span></div>
     </div>
-    
+
+    <div id="day3" class="day-section">
+        <div class="weather">🌤️ 16°C / 21°C · 親子與童趣</div>
+        <div class="item"><span class="title">史努比樂園 Snoopy Garden</span><span class="memo">超好拍的文青景點，在自然中找尋史努比。</span></div>
+        <div class="item"><span class="title">神話世界主題樂園</span><span class="memo">刺激好玩的遊樂設施與卡通主題區。</span></div>
     </div>
+
+    <div id="day4" class="day-section">
+        <div class="weather">☀️ 17°C / 23°C · 網美必去</div>
+        <div class="item"><span class="title">泰迪熊博物館</span><span class="memo">收藏各種造型可愛的泰迪熊。</span></div>
+        <div class="item"><span class="title">涯月海邊咖啡街</span><span class="memo">一邊喝咖啡一邊欣賞清澈見底的藍色大海。</span></div>
+        <div class="item"><span class="title">東門傳統市場</span><span class="memo">品嚐道地小吃，感受在地市場活力。</span></div>
+    </div>
+
+    <div id="day5" class="day-section">
+        <div class="weather">☁️ 14°C / 19°C · 最後巡禮</div>
+        <div class="item"><span class="title">蓮洞購物商圈</span><span class="memo">最後採購紀念品、服飾與美妝產品。</span></div>
+        <div class="item"><span class="title">濟州 ✈️ 台北</span><span class="memo">帶著滿滿回憶前往機場，準備回暖暖的家。</span></div>
+    </div>
+</div>
 
 <script>
     function openDay(evt, dayName) {
         var i, dayContent, dateBtn;
         dayContent = document.getElementsByClassName("day-section");
-        for (i = 0; i < dayContent.length; i++) {
-            dayContent[i].style.display = "none";
-            dayContent[i].classList.remove("active");
-        }
+        for (i = 0; i < dayContent.length; i++) { dayContent[i].classList.remove("active"); }
         dateBtn = document.getElementsByClassName("date-btn");
-        for (i = 0; i < dateBtn.length; i++) {
-            dateBtn[i].className = dateBtn[i].className.replace(" active", "");
-        }
-        document.getElementById(dayName).style.display = "block";
-        setTimeout(() => { document.getElementById(dayName).classList.add("active"); }, 10);
-        evt.currentTarget.className += " active";
+        for (i = 0; i < dateBtn.length; i++) { dateBtn[i].classList.remove("active"); }
+        document.getElementById(dayName).classList.add("active");
+        evt.currentTarget.classList.add("active");
     }
 </script>
-
 </body>
 </html>
