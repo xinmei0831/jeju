@@ -13,192 +13,76 @@
             --sub: #8E8E93;
             --tag-act: #45B6C4;
             --tag-food: #FF9F0A;
-            --tag-shop: #AF52DE;
             --naver: #03C75A;
         }
 
         * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
         body { font-family: 'Noto Sans TC', sans-serif; background: var(--bg); color: var(--primary); margin: 0; overflow-x: hidden; }
 
-        /* 頂部導航 */
-        header {
-            background: var(--card);
-            padding: 50px 0 15px;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 1px 10px rgba(0,0,0,0.03);
-        }
+        header { background: var(--card); padding: 50px 0 15px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 1px 10px rgba(0,0,0,0.03); }
+        .app-title { text-align: center; font-family: 'Montserrat', sans-serif; font-size: 1.2rem; font-weight: 700; letter-spacing: 2px; margin-bottom: 20px; }
 
-        .app-title {
-            text-align: center;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 1.2rem;
-            font-weight: 700;
-            letter-spacing: 2px;
-            margin-bottom: 20px;
-        }
-
-        /* 日期滑動選擇器 */
-        .date-scroller {
-            display: flex;
-            overflow-x: auto;
-            padding: 0 20px;
-            gap: 12px;
-            scrollbar-width: none;
-        }
+        .date-scroller { display: flex; overflow-x: auto; padding: 0 20px; gap: 12px; scrollbar-width: none; }
         .date-scroller::-webkit-scrollbar { display: none; }
 
         .date-item {
-            min-width: 65px;
-            height: 75px;
-            background: #F2F2F7;
-            border-radius: 16px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            border: none;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            min-width: 65px; height: 75px; background: #F2F2F7; border-radius: 16px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer; border: none; transition: 0.3s;
         }
-
+        .date-item.active { background: var(--primary); color: #fff; transform: scale(1.05); }
         .date-item span { display: block; }
-        .date-item .d-day { font-size: 0.65rem; color: var(--sub); margin-bottom: 4px; }
-        .date-item .d-num { font-size: 1.1rem; font-weight: 700; font-family: 'Montserrat'; }
+        .date-item .d-day { font-size: 0.65rem; margin-bottom: 4px; opacity: 0.7; }
+        .date-item .d-num { font-size: 1rem; font-weight: 700; font-family: 'Montserrat'; }
 
-        .date-item.active {
-            background: var(--primary);
-            color: #fff;
-            transform: scale(1.05);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-        }
-        .date-item.active .d-day { color: rgba(255,255,255,0.7); }
-
-        /* 內容區 */
         .main { padding: 20px; max-width: 500px; margin: 0 auto; }
-        .day-panel { display: none; animation: pageIn 0.5s ease forwards; }
+        .day-panel { display: none; animation: fadeIn 0.4s ease forwards; }
         .day-panel.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        @keyframes pageIn {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
+        /* 天氣小工具修復版 */
+        .weather-box {
+            background: #fff; border-radius: 24px; margin-bottom: 25px; 
+            padding: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.04);
         }
 
-        /* 天氣小工具 */
-        .weather-widget {
-            background: #fff;
-            border-radius: 24px;
-            margin-bottom: 25px;
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
-            border: 1px solid rgba(0,0,0,0.05);
-        }
+        .cover-img { width: 100%; height: 200px; object-fit: cover; border-radius: 24px; margin-bottom: 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); }
 
-        .cover-img {
-            width: 100%;
-            height: 220px;
-            object-fit: cover;
-            border-radius: 24px;
-            margin-bottom: 20px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-        }
-
-        /* 行程卡片 */
         .card {
-            background: var(--card);
-            border-radius: 22px;
-            padding: 20px;
-            margin-bottom: 16px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
-            border: 1px solid rgba(0,0,0,0.03);
-            display: flex;
-            gap: 15px;
+            background: var(--card); border-radius: 22px; padding: 20px; margin-bottom: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02); display: flex; gap: 15px; border: 1px solid #f8f8f8;
         }
-
-        .time-col {
-            font-family: 'Montserrat';
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: var(--primary);
-            padding-top: 2px;
-        }
-
-        .info-col { flex: 1; }
-
-        .tag {
-            font-size: 0.6rem;
-            font-weight: 700;
-            padding: 3px 10px;
-            border-radius: 8px;
-            color: #fff;
-            display: inline-block;
-            margin-bottom: 8px;
-            letter-spacing: 0.5px;
-        }
+        .time-col { font-family: 'Montserrat'; font-size: 0.85rem; font-weight: 700; min-width: 45px; }
+        .tag { font-size: 0.6rem; font-weight: 700; padding: 3px 10px; border-radius: 8px; color: #fff; display: inline-block; margin-bottom: 8px; }
         .tag-act { background: var(--tag-act); }
         .tag-food { background: var(--tag-food); }
-        .tag-shop { background: var(--tag-shop); }
 
-        .title {
-            font-size: 1.05rem;
-            font-weight: 700;
-            margin-bottom: 6px;
-            display: block;
-            line-height: 1.4;
-        }
-
-        .desc {
-            font-size: 0.85rem;
-            color: var(--sub);
-            line-height: 1.6;
-            margin-bottom: 12px;
-        }
+        .title { font-size: 1.05rem; font-weight: 700; margin-bottom: 6px; display: block; }
+        .desc { font-size: 0.85rem; color: var(--sub); line-height: 1.5; margin-bottom: 12px; }
 
         .naver-link {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            color: var(--naver);
-            font-size: 0.8rem;
-            font-weight: 700;
-            text-decoration: none;
-            background: rgba(3, 199, 90, 0.08);
-            padding: 6px 14px;
-            border-radius: 100px;
-            transition: 0.2s;
+            display: inline-flex; align-items: center; gap: 6px; color: var(--naver);
+            font-size: 0.8rem; font-weight: 700; text-decoration: none;
+            background: rgba(3, 199, 90, 0.1); padding: 8px 16px; border-radius: 100px;
         }
-        .naver-link:active { background: var(--naver); color: #fff; }
-
     </style>
 </head>
 <body>
 
 <header>
-    <div class="app-title">JEJU ISLAND</div>
+    <div class="app-title">JEJU TRAVEL</div>
     <div class="date-scroller">
-        <button class="date-item active" onclick="changeDay(1, this)">
-            <span class="d-day">DAY 1</span><span class="d-num">05.13</span>
-        </button>
-        <button class="date-item" onclick="changeDay(2, this)">
-            <span class="d-day">DAY 2</span><span class="d-num">05.14</span>
-        </button>
-        <button class="date-item" onclick="changeDay(3, this)">
-            <span class="d-day">DAY 3</span><span class="d-num">05.15</span>
-        </button>
-        <button class="date-item" onclick="changeDay(4, this)">
-            <span class="d-day">DAY 4</span><span class="d-num">05.16</span>
-        </button>
-        <button class="date-item" onclick="changeDay(5, this)">
-            <span class="d-day">DAY 5</span><span class="d-num">05.17</span>
-        </button>
+        <button class="date-item active" onclick="changeDay(1, this)"><span class="d-day">DAY 1</span><span class="d-num">05.13</span></button>
+        <button class="date-item" onclick="changeDay(2, this)"><span class="d-day">DAY 2</span><span class="d-num">05.14</span></button>
+        <button class="date-item" onclick="changeDay(3, this)"><span class="d-day">DAY 3</span><span class="d-num">05.15</span></button>
+        <button class="date-item" onclick="changeDay(4, this)"><span class="d-day">DAY 4</span><span class="d-num">05.16</span></button>
+        <button class="date-item" onclick="changeDay(5, this)"><span class="d-day">DAY 5</span><span class="d-num">05.17</span></button>
     </div>
 </header>
 
 <div class="main">
-    
-    <div class="weather-widget">
-        <a class="weatherwidget-io" href="https://forecast7.com/zh-tw/33d49126d53/jeju-si/" data-label_1="JEJU" data-label_2="LIVE WEATHER" data-font="Noto Sans TC" data-icons="Climacons Animated" data-mode="Current" data-theme="pure">JEJU LIVE</a>
+    <div class="weather-box">
+        <a class="weatherwidget-io" href="https://forecast7.com/zh-tw/33d49126d53/jeju-si/" data-label_1="JEJU" data-label_2="WEATHER" data-font="Noto Sans TC" data-icons="Climacons Animated" data-mode="Current" data-theme="pure">JEJU WEATHER</a>
         <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');</script>
     </div>
 
@@ -209,8 +93,8 @@
             <div class="info-col">
                 <span class="tag tag-act">ACTIVITY</span>
                 <span class="title">龍頭岩 Yongduam</span>
-                <p class="desc">濟州市地標，漢漢龍潭旁的奇特黑石，海景非常壯觀。</p>
-                <a href="https://nmap.l.naver.com/view/13491732" class="naver-link">📍 Naver Map</a>
+                <p class="desc">濟州市地標，漢潭旁的奇特黑石，海景非常壯觀。</p>
+                <a href="https://map.naver.com/v5/search/Yongduam%20Rock" target="_blank" class="naver-link">📍 Naver Map</a>
             </div>
         </div>
     </div>
@@ -222,20 +106,20 @@
             <div class="info-col">
                 <span class="tag tag-act">ACTIVITY</span>
                 <span class="title">城山日出峰</span>
-                <p class="desc">世界自然遺產，火山口頂部的壯闊景色。爬上去約需 20 分鐘。</p>
-                <a href="https://nmap.l.naver.com/view/13491321" class="naver-link">📍 Naver Map</a>
+                <p class="desc">世界自然遺產，火山口頂部的壯闊景色。</p>
+                <a href="https://map.naver.com/v5/search/Seongsan%20Ilchulbong" target="_blank" class="naver-link">📍 Naver Map</a>
             </div>
         </div>
     </div>
-    
-    </div>
+</div>
 
 <script>
     function changeDay(num, btn) {
         document.querySelectorAll('.date-item').forEach(i => i.classList.remove('active'));
         btn.classList.add('active');
         document.querySelectorAll('.day-panel').forEach(p => p.classList.remove('active'));
-        document.getElementById('day' + num).classList.add('active');
+        const target = document.getElementById('day' + num);
+        if(target) target.classList.add('active');
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 </script>
