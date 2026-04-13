@@ -19,26 +19,15 @@
         * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
         body { font-family: 'Noto Sans TC', sans-serif; background: var(--bg-color); color: var(--text-main); margin: 0; padding-bottom: 100px; }
 
-        /* --- 修正重點：左上角年份外框 --- */
+        /* Header & Year Label */
         header { background: var(--header-bg); padding: 20px 0 15px; position: relative; color: #fff; }
-        
         .year-label { 
-            position: absolute; 
-            top: 20px; 
-            left: 20px; 
-            font-family: 'Montserrat'; 
-            font-size: 0.8rem; 
-            font-weight: 700;
-            padding: 4px 12px;
-            background: rgba(255, 255, 255, 0.15); /* 輕微透明底色 */
-            border: 1px solid rgba(255, 255, 255, 0.3); /* 淺色外框 */
-            border-radius: 50px; /* 膠囊狀外框 */
-            letter-spacing: 1px;
+            position: absolute; top: 20px; left: 20px; font-family: 'Montserrat'; font-size: 0.8rem; font-weight: 700;
+            padding: 4px 12px; background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 50px;
         }
-
         .app-title { text-align: center; font-family: 'Montserrat', sans-serif; font-size: 1.1rem; font-weight: 700; letter-spacing: 3px; margin: 30px 0 20px; }
 
-        /* 日期導覽 (維持正方形) */
+        /* 正方形日期導覽列 */
         .date-scroller { display: flex; overflow-x: auto; gap: 10px; padding: 10px 15px; scrollbar-width: none; }
         .date-scroller::-webkit-scrollbar { display: none; }
         .date-item {
@@ -51,24 +40,48 @@
         .date-item .d-num { font-size: 1.2rem; font-weight: 700; font-family: 'Montserrat'; line-height: 1; }
         .date-item .d-week { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; margin-top: 2px; }
 
-        /* DAY 5 資訊列 (維持原樣) */
+        /* DAY 1 資訊列 & 大圖 */
         .day-info-row { display: flex; justify-content: space-between; align-items: center; padding: 25px 20px 15px; }
         .day-title-group { display: flex; align-items: baseline; gap: 10px; }
-        .day-title-group h2 { margin: 0; font-family: 'Montserrat'; font-size: 1.8rem; font-weight: 800; color: #2D3436; }
-        .day-title-group .sub-date { font-size: 0.95rem; color: var(--text-sub); }
+        .day-title-group h2 { margin: 0; font-family: 'Montserrat'; font-size: 1.8rem; font-weight: 800; }
         .weather-tag { background: #FFFFFF; padding: 6px 14px; border-radius: 50px; display: flex; align-items: center; gap: 6px; font-size: 0.85rem; font-weight: 600; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-
-        /* 大圖與行程 (維持原樣) */
         .hero-container { padding: 0 20px; margin-bottom: 25px; }
         .hero-image { width: 100%; height: 220px; background-image: url('https://images.unsplash.com/photo-1542359649-31e03ad4d92c?auto=format&fit=crop&w=1000&q=80'); background-size: cover; background-position: center; border-radius: 28px; position: relative; }
-        .location-badge { position: absolute; bottom: 18px; left: 18px; background: rgba(0, 0, 0, 0.4); color: #fff; padding: 5px 14px; border-radius: 50px; font-size: 0.75rem; backdrop-filter: blur(8px); display: flex; align-items: center; gap: 4px; }
+        .location-badge { position: absolute; bottom: 18px; left: 18px; background: rgba(0, 0, 0, 0.4); color: #fff; padding: 5px 14px; border-radius: 50px; font-size: 0.75rem; backdrop-filter: blur(8px); }
+
+        /* 行程清單 */
         .main { padding: 0 20px; max-width: 500px; margin: 0 auto; }
         .itinerary-container { position: relative; padding-left: 20px; }
         .itinerary-container::before { content: ''; position: absolute; left: 5px; top: 10px; bottom: 10px; width: 2px; background: var(--accent-blue); opacity: 0.5; }
         .event-card { background: var(--card-white); border-radius: 20px; padding: 20px; margin-bottom: 15px; display: flex; align-items: center; gap: 15px; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
         .drag-handle { position: absolute; left: -20px; top: 50%; transform: translateY(-50%); width: 12px; height: 12px; background: var(--header-bg); border-radius: 50%; border: 2px solid #fff; cursor: grab; z-index: 10; }
         .time-label { font-family: 'Montserrat'; font-size: 0.9rem; font-weight: 700; min-width: 55px; color: var(--header-bg); }
-        .event-title { font-size: 1.05rem; font-weight: 700; }
+        .event-title { font-size: 1.05rem; font-weight: 700; flex: 1; }
+
+        /* --- 重點修正：詳情彈窗格式 --- */
+        .detail-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #fff; z-index: 3000; overflow-y: auto;
+        }
+        .detail-header-img {
+            width: 100%; height: 300px; background-size: cover; background-position: center; position: relative;
+        }
+        .close-detail {
+            position: absolute; top: 20px; left: 20px; width: 40px; height: 40px;
+            background: rgba(255,255,255,0.8); border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 1.2rem; cursor: pointer; backdrop-filter: blur(5px);
+        }
+        .detail-body { padding: 30px 25px; }
+        .detail-title { font-size: 1.8rem; font-weight: 800; margin: 0 0 5px 0; color: #2D3436; }
+        .detail-time { font-family: 'Montserrat'; font-size: 1rem; color: var(--header-bg); font-weight: 600; margin-bottom: 25px; }
+        
+        .info-list { border-top: 1px solid #EEE; border-bottom: 1px solid #EEE; padding: 20px 0; margin-bottom: 25px; }
+        .info-item { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 15px; font-size: 0.95rem; color: #636E72; }
+        .info-item i { width: 20px; text-align: center; color: var(--header-bg); }
+
+        .detail-desc-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 12px; display: block; }
+        .detail-desc-text { line-height: 1.8; color: #455A64; font-size: 1rem; }
+
         .fab { position: fixed; bottom: 30px; right: 30px; width: 65px; height: 65px; background: var(--header-bg); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
     </style>
 </head>
@@ -85,9 +98,7 @@
         <h2 id="display-day">DAY 1</h2>
         <span class="sub-date" id="display-full-date">05-13(週一)</span>
     </div>
-    <div class="weather-tag">
-        <span>☁️</span> <span>18.5°C</span> <span style="opacity: 0.4; margin-left: 2px;">濟州</span>
-    </div>
+    <div class="weather-tag"><span>☁️</span> 18.5°C</div>
 </div>
 
 <div class="hero-container">
@@ -96,6 +107,25 @@
 
 <div class="main">
     <div class="itinerary-container" id="itinerary-list"></div>
+</div>
+
+<div id="detailOverlay" class="detail-overlay">
+    <div class="detail-header-img" id="detImg">
+        <div class="close-detail" onclick="closeDetail()">✕</div>
+    </div>
+    <div class="detail-body">
+        <h1 class="detail-title" id="detTitle">景點名稱</h1>
+        <div class="detail-time" id="detTime">10:00 AM</div>
+        
+        <div class="info-list">
+            <div class="info-item">📍 <span id="detAddr">地址資訊載入中...</span></div>
+            <div class="info-item">⏰ <span id="detOpen">09:00 - 18:00</span></div>
+            <div class="info-item">📞 <span id="detPhone">064-123-4567</span></div>
+        </div>
+
+        <span class="detail-desc-title">景點介紹</span>
+        <p class="detail-desc-text" id="detDesc">這裡是非常漂亮的景點描述文字...</p>
+    </div>
 </div>
 
 <div class="fab">＋</div>
@@ -110,18 +140,18 @@
         {day:5, num:17, week:'Fri', full:'05-17(週五)'}
     ];
 
+    // 擴充資料結構以符合詳情頁
     let tripData = JSON.parse(localStorage.getItem('jejuFinal')) || {
-        1: [{time:'10:00', title:'龍頭岩 Yongduam'}], 2: [], 3: [], 4: [], 5: []
+        1: [
+            {time:'10:00', title:'龍頭岩 Yongduam', addr:'Jeju-si, Yongduam-gil 15', open:'24小時營業', phone:'無', img:'https://images.unsplash.com/photo-1542359649-31e03ad4d92c', desc:'龍頭岩位於濟州市區北側海邊，由漢拏山噴出的熔岩冷卻後形成的岩石，形似龍頭。'},
+            {time:'13:00', title:'黑豬肉午餐', addr:'濟州市區餐廳街', open:'11:00 - 21:00', phone:'064-777-8888', img:'https://images.unsplash.com/photo-1544124499-58912cbddaad', desc:'來到濟州島必吃的美味黑豬肉。'}
+        ],
+        2: [], 3: [], 4: [], 5: []
     };
 
     const tabs = document.getElementById('day-tabs');
     dates.forEach(d => {
-        tabs.innerHTML += `
-            <div class="date-item ${d.day==1?'active':''}" onclick="setDay(${d.day}, this)">
-                <span class="d-day">DAY ${d.day}</span>
-                <span class="d-num">${d.num}</span>
-                <span class="d-week">${d.week}</span>
-            </div>`;
+        tabs.innerHTML += `<div class="date-item ${d.day==1?'active':''}" onclick="setDay(${d.day}, this)"><span class="d-day">DAY ${d.day}</span><span class="d-num">${d.num}</span><span class="d-week">${d.week}</span></div>`;
     });
 
     const listEl = document.getElementById('itinerary-list');
@@ -139,12 +169,32 @@
 
     function render() {
         listEl.innerHTML = (tripData[currentDay] || []).map((item, index) => `
-            <div class="event-card">
-                <div class="drag-handle"></div>
+            <div class="event-card" onclick="openDetail(${index})">
+                <div class="drag-handle" onclick="event.stopPropagation()"></div>
                 <div class="time-label">${item.time}</div>
-                <div class="info-box"><div class="event-title">${item.title}</div></div>
+                <div class="event-title">${item.title}</div>
             </div>`).join('');
     }
+
+    function openDetail(index) {
+        const item = tripData[currentDay][index];
+        document.getElementById('detTitle').innerText = item.title;
+        document.getElementById('detTime').innerText = item.time + ' AM';
+        document.getElementById('detAddr').innerText = item.addr || '尚未輸入地址';
+        document.getElementById('detOpen').innerText = item.open || '未提供時間';
+        document.getElementById('detPhone').innerText = item.phone || '未提供電話';
+        document.getElementById('detDesc').innerText = item.desc || '暫無介紹內容';
+        document.getElementById('detImg').style.backgroundImage = `url('${item.img}')`;
+        
+        document.getElementById('detailOverlay').style.display = 'block';
+        document.body.style.overflow = 'hidden'; // 禁止底層滾動
+    }
+
+    function closeDetail() {
+        document.getElementById('detailOverlay').style.display = 'none';
+        document.body.style.overflow = 'auto';
+    }
+
     render();
 </script>
 </body>
