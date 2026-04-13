@@ -15,7 +15,7 @@
             --bg-gray: #F8F9FA;
         }
 
-        body { font-family: 'Noto Sans TC', sans-serif; background: var(--bg-gray); margin: 0; padding-bottom: 100px; color: #333; }
+        body { font-family: 'Noto Sans TC', sans-serif; background: var(--bg-gray); margin: 0; padding-bottom: 100px; color: #333; overflow-x: hidden; }
         
         header { background: var(--main-color); color: #fff; padding: 25px 20px; text-align: center; }
         header h1 { font-family: 'Montserrat'; font-size: 1.2rem; letter-spacing: 3px; margin: 0; }
@@ -25,10 +25,11 @@
         .event-card { 
             background: #fff; border-radius: 20px; padding: 20px; margin-bottom: 15px; 
             box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 15px;
-            cursor: pointer;
+            cursor: pointer; transition: transform 0.2s;
         }
-        .time-badge { font-family: 'Montserrat'; font-weight: 700; color: var(--main-color); min-width: 60px; }
-        .title-text { font-weight: 700; font-size: 1.1rem; }
+        .event-card:active { transform: scale(0.98); }
+        .time-badge { font-family: 'Montserrat'; font-weight: 700; color: var(--main-color); min-width: 65px; background: #F0EDE9; padding: 5px 10px; border-radius: 8px; text-align: center; }
+        .title-text { font-weight: 700; font-size: 1.1rem; flex: 1; }
 
         /* 詳情頁面 */
         .overlay { 
@@ -36,29 +37,30 @@
             background: #fff; z-index: 2000; overflow-y: auto; 
         }
         .detail-hero { width: 100%; height: 280px; background-size: cover; background-position: center; background-color: #eee; position: relative; }
-        .close-btn { position: absolute; top: 20px; left: 20px; width: 40px; height: 40px; background: rgba(255,255,255,0.8); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        .close-btn { position: absolute; top: 20px; left: 20px; width: 40px; height: 40px; background: rgba(255,255,255,0.9); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
         
         .content-body { padding: 25px; }
         .naver-btn { 
             display: flex; align-items: center; justify-content: center; gap: 8px;
-            background: var(--accent-green); color: #fff; padding: 12px; border-radius: 12px;
-            text-decoration: none; font-weight: 700; margin: 20px 0;
+            background: var(--accent-green); color: #fff; padding: 14px; border-radius: 12px;
+            text-decoration: none; font-weight: 700; margin: 20px 0; border: none; font-size: 1rem;
         }
 
         /* 裁減視窗 */
         .crop-modal { 
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.9); z-index: 3000; 
+            background: rgba(0,0,0,0.95); z-index: 3000; 
         }
         .crop-box { background: #fff; width: 90%; max-width: 400px; margin: 50px auto; border-radius: 20px; padding: 20px; text-align: center; }
         #cropper-target { width: 100%; height: 300px; margin-bottom: 20px; }
+        .crop-action-btn { padding: 12px 24px; border-radius: 10px; font-weight: bold; border: none; margin: 5px; }
 
         /* 編輯欄位 */
         .edit-field { margin-bottom: 15px; }
-        .edit-field label { font-size: 0.8rem; color: #888; display: block; margin-bottom: 5px; }
-        .edit-field input, .edit-field textarea { width: 100%; padding: 12px; border: 1px solid #eee; border-radius: 10px; box-sizing: border-box; }
+        .edit-field label { font-size: 0.85rem; color: #888; display: block; margin-bottom: 5px; font-weight: 500; }
+        .edit-field input, .edit-field textarea { width: 100%; padding: 12px; border: 1px solid #eee; border-radius: 10px; box-sizing: border-box; font-size: 1rem; }
 
-        .fab { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background: var(--main-color); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .fab { position: fixed; bottom: 30px; right: 30px; width: 65px; height: 65px; background: var(--main-color); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 35px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); z-index: 1000; }
     </style>
 </head>
 <body>
@@ -73,49 +75,63 @@
     </div>
     <div class="content-body">
         <div id="readMode">
-            <h2 id="vTitle" style="margin:0 0 5px 0;"></h2>
-            <div id="vTime" style="color:#888; font-weight:bold; margin-bottom:20px;"></div>
+            <h2 id="vTitle" style="margin:0 0 5px 0; font-size: 1.5rem;"></h2>
+            <div id="vTime" style="color:#D4AF37; font-weight:800; margin-bottom:20px; font-family: 'Montserrat';"></div>
             <a id="vMap" href="#" class="naver-btn" target="_blank">📍 開啟 Naver Map</a>
-            <div style="white-space: pre-wrap; line-height: 1.6;" id="vDesc"></div>
-            <button onclick="enterEdit()" style="margin-top:30px; width:100%; padding:15px; border:1px solid #ddd; border-radius:10px; background:none;">✎ 編輯此行程</button>
+            <p style="color: #666; font-size: 0.9rem; margin-bottom: 10px;">景點介紹：</p>
+            <div style="white-space: pre-wrap; line-height: 1.7; background: #F9F9F9; padding: 15px; border-radius: 10px;" id="vDesc"></div>
+            <button onclick="enterEdit()" style="margin-top:30px; width:100%; padding:15px; border:1px solid #ddd; border-radius:10px; background:#fff; font-weight: 600;">✎ 編輯此行程</button>
+            <button onclick="deleteCurrent()" style="margin-top:10px; width:100%; padding:10px; border:none; background:none; color:#ff4d4d; font-size: 0.9rem;">刪除此行程</button>
         </div>
 
         <div id="editMode" style="display:none;">
             <div class="edit-field">
-                <label>更換景點照片</label>
+                <label>照片 (建議上傳後裁減)</label>
                 <input type="file" accept="image/*" onchange="startCrop(this)">
             </div>
-            <div class="edit-field"><label>景點名稱</label><input type="text" id="iTitle"></div>
-            <div class="edit-field"><label>時間 (如 14:00)</label><input type="text" id="iTime"></div>
-            <div class="edit-field"><label>Naver Map 網址</label><input type="text" id="iMap"></div>
-            <div class="edit-field"><label>筆記/介紹</label><textarea id="iDesc" rows="4"></textarea></div>
-            <button onclick="saveData()" style="width:100%; padding:15px; background:var(--main-color); color:#fff; border:none; border-radius:10px; font-weight:bold;">儲存並更新</button>
+            <div class="edit-field"><label>景點名稱</label><input type="text" id="iTitle" placeholder="例如：LowKey Seongsu"></div>
+            <div class="edit-field"><label>預計時間</label><input type="text" id="iTime" placeholder="例如：14:00"></div>
+            <div class="edit-field"><label>Naver Map 連結</label><input type="text" id="iMap" placeholder="貼上網址"></div>
+            <div class="edit-field"><label>景點介紹 / 必點清單</label><textarea id="iDesc" rows="4" placeholder="寫點什麼吧..."></textarea></div>
+            <button onclick="saveData()" style="width:100%; padding:16px; background:var(--main-color); color:#fff; border:none; border-radius:12px; font-weight:800; font-size: 1rem; margin-top: 10px;">儲存更新</button>
+            <button onclick="exitEdit()" style="width:100%; padding:12px; border:none; background:none; color:#888; margin-top: 10px;">取消編輯</button>
         </div>
     </div>
 </div>
 
 <div id="cropModal" class="crop-modal">
     <div class="crop-box">
-        <h3>調整照片範圍</h3>
+        <h3 style="margin-top:0;">裁減照片</h3>
         <div id="cropper-target"></div>
-        <button onclick="cancelCrop()" style="padding:10px 20px;">取消</button>
-        <button onclick="finishCrop()" style="padding:10px 20px; background:var(--main-color); color:#fff; border-radius:8px;">確認裁減</button>
+        <div style="display: flex; justify-content: center;">
+            <button class="crop-action-btn" onclick="cancelCrop()" style="background:#eee;">取消</button>
+            <button class="crop-action-btn" onclick="finishCrop()" style="background:var(--main-color); color:#fff;">確認裁減</button>
+        </div>
     </div>
 </div>
 
 <div class="fab" onclick="addNew()">＋</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
+
 <script>
-    let tripData = JSON.parse(localStorage.getItem('TripV2')) || [{title:'LowKey Seongsu', time:'14:00', img:'', map:'', desc:''}];
+    // 初始化資料
+    let tripData = JSON.parse(localStorage.getItem('Trip_Final_V3')) || [
+        {title:'LowKey Seongsu (로우키 성수)', time:'14:00', img:'', map:'https://naver.me/5vl6v6kG', desc:'必點：香草拿鐵、焦糖奶油拿鐵'}
+    ];
     let activeIdx = 0;
     let cropper = null;
     let tempImgBase64 = "";
 
     function render() {
-        document.getElementById('list').innerHTML = tripData.map((d, i) => `
+        const listEl = document.getElementById('list');
+        if (tripData.length === 0) {
+            listEl.innerHTML = '<div style="text-align:center; color:#888; margin-top:50px;">目前沒有行程，點擊右下角新增吧！</div>';
+            return;
+        }
+        listEl.innerHTML = tripData.map((d, i) => `
             <div class="event-card" onclick="openDetail(${i})">
-                <div class="time-badge">${d.time}</div>
+                <div class="time-badge">${d.time || '--:--'}</div>
                 <div class="title-text">${d.title}</div>
             </div>
         `).join('');
@@ -126,10 +142,11 @@
         const d = tripData[i];
         document.getElementById('vTitle').innerText = d.title;
         document.getElementById('vTime').innerText = d.time;
-        document.getElementById('vDesc').innerText = d.desc || '尚無筆記';
+        document.getElementById('vDesc').innerText = d.desc || '尚未輸入介紹內容。';
         document.getElementById('vMap').href = d.map || '#';
         document.getElementById('viewImg').style.backgroundImage = d.img ? `url(${d.img})` : 'none';
         
+        // 填入編輯欄位
         document.getElementById('iTitle').value = d.title;
         document.getElementById('iTime').value = d.time;
         document.getElementById('iMap').value = d.map;
@@ -152,17 +169,18 @@
                     cropper = new Croppie(el, {
                         viewport: { width: 300, height: 200, type: 'square' },
                         boundary: { width: '100%', height: 280 },
-                        showZoomer: true
+                        showZoomer: true,
+                        enableOrientation: true
                     });
                     cropper.bind({ url: e.target.result });
-                }, 200);
+                }, 300);
             };
             reader.readAsDataURL(input.files[0]);
         }
     }
 
     function finishCrop() {
-        cropper.result('base64').then(base64 => {
+        cropper.result({type:'base64', size: 'viewport', format: 'jpeg'}).then(base64 => {
             tempImgBase64 = base64;
             document.getElementById('viewImg').style.backgroundImage = `url(${base64})`;
             cancelCrop();
@@ -171,27 +189,40 @@
 
     function saveData() {
         tripData[activeIdx] = {
-            title: document.getElementById('iTitle').value,
-            time: document.getElementById('iTime').value,
+            title: document.getElementById('iTitle').value || '未命名行程',
+            time: document.getElementById('iTime').value || '00:00',
             map: document.getElementById('iMap').value,
             desc: document.getElementById('iDesc').value,
             img: tempImgBase64
         };
-        localStorage.setItem('TripV2', JSON.stringify(tripData));
+        localStorage.setItem('Trip_Final_V3', JSON.stringify(tripData));
         render();
         openDetail(activeIdx);
     }
 
     function addNew() {
-        tripData.push({title:'新行程', time:'00:00', img:'', map:'', desc:''});
+        tripData.push({title:'新行程', time:'12:00', img:'', map:'', desc:''});
         render();
         openDetail(tripData.length - 1);
         enterEdit();
     }
 
+    function deleteCurrent() {
+        if (confirm('確定要刪除這個行程嗎？')) {
+            tripData.splice(activeIdx, 1);
+            localStorage.setItem('Trip_Final_V3', JSON.stringify(tripData));
+            render();
+            closeOverlay();
+        }
+    }
+
     function enterEdit() {
         document.getElementById('readMode').style.display = 'none';
         document.getElementById('editMode').style.display = 'block';
+    }
+    function exitEdit() {
+        document.getElementById('readMode').style.display = 'block';
+        document.getElementById('editMode').style.display = 'none';
     }
     function closeOverlay() { document.getElementById('detailOverlay').style.display = 'none'; }
     function cancelCrop() { document.getElementById('cropModal').style.display = 'none'; }
