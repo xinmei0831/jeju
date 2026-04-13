@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Jeju Planner - Maps Integration</title>
+    <title>Jeju Planner - Pro Map</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <style>
@@ -20,7 +20,7 @@
         * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
         body { font-family: 'Noto Sans TC', sans-serif; background: var(--bg-color); color: var(--text-main); margin: 0; padding-bottom: 100px; }
 
-        /* 2026 年份膠囊外框 */
+        /* 2026 膠囊標籤 */
         header { background: var(--header-bg); padding: 20px 0 15px; position: relative; color: #fff; }
         .year-label { 
             position: absolute; top: 20px; left: 20px; font-family: 'Montserrat'; font-size: 0.8rem; font-weight: 700;
@@ -40,7 +40,7 @@
         .date-item .d-num { font-size: 1.2rem; font-weight: 700; font-family: 'Montserrat'; line-height: 1; }
         .date-item .d-week { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; margin-top: 2px; }
 
-        /* 天氣與封面圖區塊 */
+        /* 天氣與首頁封面圖 */
         .day-info-row { display: flex; justify-content: space-between; align-items: center; padding: 25px 20px 15px; }
         .day-title-group { display: flex; align-items: baseline; gap: 10px; }
         .day-title-group h2 { margin: 0; font-family: 'Montserrat'; font-size: 1.8rem; font-weight: 800; }
@@ -50,7 +50,7 @@
         .hero-image { width: 100%; height: 220px; background-size: cover; background-position: center; border-radius: 28px; position: relative; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
         .location-badge { position: absolute; bottom: 18px; left: 18px; background: rgba(0, 0, 0, 0.4); color: #fff; padding: 5px 14px; border-radius: 50px; font-size: 0.75rem; backdrop-filter: blur(8px); }
 
-        /* 行程清單 */
+        /* 行程卡片 */
         .main { padding: 0 20px; max-width: 500px; margin: 0 auto; }
         .itinerary-container { position: relative; padding-left: 20px; }
         .itinerary-container::before { content: ''; position: absolute; left: 5px; top: 10px; bottom: 10px; width: 2px; background: var(--accent-blue); opacity: 0.5; }
@@ -59,31 +59,37 @@
         .time-label { font-family: 'Montserrat'; font-size: 0.9rem; font-weight: 700; min-width: 55px; color: var(--header-bg); }
         .event-title { font-size: 1.05rem; font-weight: 700; flex: 1; }
 
-        /* 詳情視窗與 NAVER 按鈕 */
+        /* --- 詳情頁 UI 更新 --- */
         .detail-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 3000; overflow-y: auto; }
-        .detail-header-img { width: 100%; height: 280px; background-size: cover; background-position: center; position: relative; }
+        .detail-header-img { width: 100%; height: 300px; background-size: cover; background-position: center; position: relative; background-color: #eee; }
         .nav-btn { position: absolute; top: 20px; width: 40px; height: 40px; background: rgba(255,255,255,0.8); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; backdrop-filter: blur(5px); z-index: 10; }
         .back-btn { left: 20px; }
         .edit-toggle-btn { right: 20px; width: auto; padding: 0 15px; border-radius: 20px; font-weight: 700; font-size: 0.9rem; }
 
         .detail-body { padding: 30px 25px; }
-        .read-mode h1 { font-size: 1.8rem; font-weight: 800; margin-bottom: 5px; }
-        .read-mode .view-time { font-family: 'Montserrat'; color: var(--header-bg); font-weight: 600; margin-bottom: 25px; }
-        .info-list { border-top: 1px solid #EEE; border-bottom: 1px solid #EEE; padding: 20px 0; margin-bottom: 25px; }
-        .info-item { display: flex; align-items: center; gap: 12px; margin-bottom: 15px; color: #636E72; font-size: 0.95rem; }
+        .read-mode h1 { font-size: 1.8rem; font-weight: 800; margin: 0 0 5px 0; }
+        .read-mode .view-time { font-family: 'Montserrat'; color: var(--header-bg); font-weight: 600; margin-bottom: 20px; }
         
-        /* 連結按鈕樣式 */
-        .naver-link-btn { 
-            display: inline-flex; align-items: center; gap: 5px; 
+        /* 地圖大按鈕 (跟截圖一樣) */
+        .naver-map-btn { 
+            display: flex; align-items: center; justify-content: center; gap: 8px;
             background: var(--naver-green); color: #fff; 
-            padding: 4px 10px; border-radius: 6px; 
-            text-decoration: none; font-size: 0.75rem; font-weight: 700; margin-left: auto;
+            width: 100%; padding: 14px; border-radius: 12px; 
+            text-decoration: none; font-weight: 700; font-size: 1rem;
+            margin: 20px 0; box-shadow: 0 4px 12px rgba(3, 199, 90, 0.2);
         }
 
+        .info-list { border-top: 1px solid #EEE; padding-top: 20px; margin-top: 10px; }
+        .info-item { display: flex; align-items: center; gap: 12px; margin-bottom: 15px; color: #636E72; font-size: 0.95rem; }
+        .desc-section { margin-top: 25px; border-top: 1px solid #eee; padding-top: 20px; }
+        .desc-section b { font-size: 1.1rem; display: block; margin-bottom: 10px; }
+        .desc-section p { line-height: 1.8; color: #455A64; }
+
+        /* 編輯模式 */
         .edit-mode { display: none; }
         .edit-group { margin-bottom: 15px; }
         .edit-label { display: block; font-size: 0.75rem; color: #95a5a6; margin-bottom: 5px; font-weight: 700; }
-        .edit-input { width: 100%; border: 1px solid #eee; padding: 12px; border-radius: 12px; font-size: 1rem; background: #f9f9f9; font-family: inherit; }
+        .edit-input { width: 100%; border: 1px solid #eee; padding: 12px; border-radius: 12px; font-size: 1rem; background: #f9f9f9; }
         .save-btn { width: 100%; background: var(--header-bg); color: #fff; border: none; padding: 16px; border-radius: 15px; font-size: 1rem; font-weight: 700; cursor: pointer; }
 
         .fab { position: fixed; bottom: 30px; right: 30px; width: 65px; height: 65px; background: var(--header-bg); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); cursor: pointer; }
@@ -118,15 +124,16 @@
         <div class="nav-btn back-btn" onclick="closeDetail()">✕</div>
         <div class="nav-btn edit-toggle-btn" id="toggleBtn" onclick="toggleEditMode()">✎ 編輯行程</div>
     </div>
+
     <div class="detail-body">
         <div id="readMode" class="read-mode">
             <h1 id="viewTitle">景點名稱</h1>
             <div class="view-time" id="viewTime">10:00 AM</div>
+            
+            <a href="#" id="viewMapLink" class="naver-map-btn" target="_blank">📍 開啟 Naver Map</a>
+
             <div class="info-list">
-                <div class="info-item">
-                    📍 <span id="viewAddr">地址資訊</span>
-                    <a href="#" id="viewMapLink" class="naver-link-btn" target="_blank">NAVER Maps</a>
-                </div>
+                <div class="info-item">📍 <span id="viewAddr">地址資訊</span></div>
                 <div class="info-item">⏰ <span id="viewOpen">營業時間</span></div>
                 <div class="info-item">📞 <span id="viewPhone">聯絡電話</span></div>
             </div>
@@ -134,11 +141,11 @@
         </div>
         
         <div id="editMode" class="edit-mode">
-            <div class="edit-group"><span class="edit-label">圖片網址</span><input type="text" id="inImg" class="edit-input"></div>
+            <div class="edit-group"><span class="edit-label">圖片網址 (可用 Unsplash 或直接貼網址)</span><input type="text" id="inImg" class="edit-input"></div>
             <div class="edit-group"><span class="edit-label">景點名稱</span><input type="text" id="inTitle" class="edit-input"></div>
             <div class="edit-group"><span class="edit-label">時間</span><input type="text" id="inTime" class="edit-input"></div>
-            <div class="edit-group"><span class="edit-label">NAVER Map 網址</span><input type="text" id="inMapUrl" class="edit-input" placeholder="https://naver.me/..."></div>
-            <div class="edit-group"><span class="edit-label">地址/時間/電話</span>
+            <div class="edit-group"><span class="edit-label">Naver Map 連結</span><input type="text" id="inMapUrl" class="edit-input" placeholder="https://naver.me/..."></div>
+            <div class="edit-group"><span class="edit-label">地址 / 營業時間 / 電話</span>
                 <input type="text" id="inAddr" class="edit-input" placeholder="地址" style="margin-bottom:8px">
                 <input type="text" id="inOpen" class="edit-input" placeholder="時間" style="margin-bottom:8px">
                 <input type="text" id="inPhone" class="edit-input" placeholder="電話">
@@ -156,8 +163,9 @@
     let editingIndex = null;
     let isEditMode = false;
 
-    let tripData = JSON.parse(localStorage.getItem('jejuFinalV4')) || {
-        1: [{time:'10:00', title:'龍頭岩', addr:'濟州市龍頭岩路', open:'24小時', phone:'無', img:'https://images.unsplash.com/photo-1542359649-31e03ad4d92c', mapUrl:'https://naver.me/5vI6v6kG', desc:'濟州地標。'}],
+    // 資料持久化
+    let tripData = JSON.parse(localStorage.getItem('jejuProV5')) || {
+        1: [{time:'10:00', title:'龍頭岩', addr:'濟州市龍頭岩路', open:'24小時', phone:'無', img:'https://images.unsplash.com/photo-1542359649-31e03ad4d92c', mapUrl:'https://naver.me/5vI6v6kG', desc:'龍頭岩是濟州著名的地標。'}],
         2: [], 3: [], 4: [], 5: []
     };
 
@@ -199,18 +207,21 @@
         isEditMode = false;
         const item = tripData[currentDay][index];
         
+        // 更新顯示照片
+        document.getElementById('viewImg').style.backgroundImage = `url('${item.img}')`;
         document.getElementById('viewTitle').innerText = item.title;
         document.getElementById('viewTime').innerText = item.time + ' AM';
         document.getElementById('viewAddr').innerText = item.addr;
         document.getElementById('viewOpen').innerText = item.open;
         document.getElementById('viewPhone').innerText = item.phone;
         document.getElementById('viewDesc').innerText = item.desc;
-        document.getElementById('viewImg').style.backgroundImage = `url('${item.img}')`;
         
+        // 地圖按鈕連結
         const mapBtn = document.getElementById('viewMapLink');
-        if(item.mapUrl) { mapBtn.style.display = 'inline-flex'; mapBtn.href = item.mapUrl; } 
+        if(item.mapUrl) { mapBtn.style.display = 'flex'; mapBtn.href = item.mapUrl; } 
         else { mapBtn.style.display = 'none'; }
 
+        // 填入編輯框
         document.getElementById('inTitle').value = item.title;
         document.getElementById('inTime').value = item.time;
         document.getElementById('inAddr').value = item.addr;
@@ -244,7 +255,7 @@
             img: document.getElementById('inImg').value,
             mapUrl: document.getElementById('inMapUrl').value
         };
-        localStorage.setItem('jejuFinalV4', JSON.stringify(tripData));
+        localStorage.setItem('jejuProV5', JSON.stringify(tripData));
         openDetail(editingIndex);
         render();
     }
