@@ -4,152 +4,197 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Seoul Trip Planner</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
     
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.css" />
 
     <style>
         :root {
-            --bg-color: #F8F4F0;
-            --main-brown: #4A3E3E;
-            --accent-gold: #D4AF37;
-            --card-white: #FFFFFF;
+            --main-color: #4A3E3E;
+            --accent-green: #03C75A;
+            --bg-gray: #F8F9FA;
         }
 
-        body { font-family: 'Noto Sans TC', sans-serif; background: var(--bg-color); color: var(--main-brown); margin: 0; padding-bottom: 80px; }
+        body { font-family: 'Noto Sans TC', sans-serif; background: var(--bg-gray); margin: 0; padding-bottom: 100px; color: #333; }
         
-        /* Header 樣式 */
-        header { background: var(--main-brown); color: #fff; padding: 20px; text-align: center; }
-        .app-title { font-family: 'Montserrat'; letter-spacing: 2px; font-weight: 800; margin: 0; }
+        header { background: var(--main-color); color: #fff; padding: 25px 20px; text-align: center; }
+        header h1 { font-family: 'Montserrat'; font-size: 1.2rem; letter-spacing: 3px; margin: 0; }
 
-        /* 裁剪視窗樣式 */
-        .cropper-modal {
-            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9); z-index: 5000;
+        /* 行程卡片清單 */
+        .container { padding: 20px; max-width: 500px; margin: 0 auto; }
+        .event-card { 
+            background: #fff; border-radius: 20px; padding: 20px; margin-bottom: 15px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; align-items: center; gap: 15px;
+            cursor: pointer;
         }
-        .cropper-content {
-            background: #fff; border-radius: 20px; padding: 20px;
-            width: 90%; max-width: 400px; margin: 50px auto; text-align: center;
-        }
-        #cropper-instance { width: 100%; height: 300px; margin-bottom: 20px; }
-        .crop-btn { padding: 12px 25px; border: none; border-radius: 10px; font-weight: 700; cursor: pointer; margin: 5px; }
-        .crop-confirm { background: var(--main-brown); color: #fff; }
-        
-        /* 行程列表樣式 */
-        .main { padding: 20px; }
-        .event-card { background: #fff; border-radius: 15px; padding: 15px; margin-bottom: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .time-badge { font-family: 'Montserrat'; font-weight: 700; color: var(--main-color); min-width: 60px; }
+        .title-text { font-weight: 700; font-size: 1.1rem; }
 
         /* 詳情頁面 */
-        .detail-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 3000; overflow-y: auto; }
-        .detail-img { width: 100%; height: 250px; background-size: cover; background-position: center; background-color: #eee; }
-        .edit-input { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; }
+        .overlay { 
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: #fff; z-index: 2000; overflow-y: auto; 
+        }
+        .detail-hero { width: 100%; height: 280px; background-size: cover; background-position: center; background-color: #eee; position: relative; }
+        .close-btn { position: absolute; top: 20px; left: 20px; width: 40px; height: 40px; background: rgba(255,255,255,0.8); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        
+        .content-body { padding: 25px; }
+        .naver-btn { 
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            background: var(--accent-green); color: #fff; padding: 12px; border-radius: 12px;
+            text-decoration: none; font-weight: 700; margin: 20px 0;
+        }
+
+        /* 裁減視窗 */
+        .crop-modal { 
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.9); z-index: 3000; 
+        }
+        .crop-box { background: #fff; width: 90%; max-width: 400px; margin: 50px auto; border-radius: 20px; padding: 20px; text-align: center; }
+        #cropper-target { width: 100%; height: 300px; margin-bottom: 20px; }
+
+        /* 編輯欄位 */
+        .edit-field { margin-bottom: 15px; }
+        .edit-field label { font-size: 0.8rem; color: #888; display: block; margin-bottom: 5px; }
+        .edit-field input, .edit-field textarea { width: 100%; padding: 12px; border: 1px solid #eee; border-radius: 10px; box-sizing: border-box; }
+
+        .fab { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background: var(--main-color); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
     </style>
 </head>
 <body>
 
-<header>
-    <h2 class="app-title">SEOUL TRIP</h2>
-</header>
+<header><h1>SEOUL TRIP PLANNER</h1></header>
 
-<div class="main">
-    <div id="itinerary-list"></div>
-</div>
+<div class="container" id="list"></div>
 
-<div id="detailOverlay" class="detail-overlay">
-    <div class="detail-img" id="viewImg"></div>
-    <div style="padding: 20px;">
-        <button onclick="closeDetail()">✕ 關閉</button>
-        <hr>
-        <div id="editArea">
-            <label>換張照片：</label>
-            <input type="file" id="inImgFile" accept="image/*" onchange="openCropper(this)">
-            <input type="text" id="inTitle" class="edit-input" placeholder="景點名稱">
-            <button style="width:100%; padding:15px; background:#4A3E3E; color:#white; border-radius:10px;" onclick="saveData()">儲存行程</button>
+<div id="detailOverlay" class="overlay">
+    <div class="detail-hero" id="viewImg">
+        <div class="close-btn" onclick="closeOverlay()">✕</div>
+    </div>
+    <div class="content-body">
+        <div id="readMode">
+            <h2 id="vTitle" style="margin:0 0 5px 0;"></h2>
+            <div id="vTime" style="color:#888; font-weight:bold; margin-bottom:20px;"></div>
+            <a id="vMap" href="#" class="naver-btn" target="_blank">📍 開啟 Naver Map</a>
+            <div style="white-space: pre-wrap; line-height: 1.6;" id="vDesc"></div>
+            <button onclick="enterEdit()" style="margin-top:30px; width:100%; padding:15px; border:1px solid #ddd; border-radius:10px; background:none;">✎ 編輯此行程</button>
+        </div>
+
+        <div id="editMode" style="display:none;">
+            <div class="edit-field">
+                <label>更換景點照片</label>
+                <input type="file" accept="image/*" onchange="startCrop(this)">
+            </div>
+            <div class="edit-field"><label>景點名稱</label><input type="text" id="iTitle"></div>
+            <div class="edit-field"><label>時間 (如 14:00)</label><input type="text" id="iTime"></div>
+            <div class="edit-field"><label>Naver Map 網址</label><input type="text" id="iMap"></div>
+            <div class="edit-field"><label>筆記/介紹</label><textarea id="iDesc" rows="4"></textarea></div>
+            <button onclick="saveData()" style="width:100%; padding:15px; background:var(--main-color); color:#fff; border:none; border-radius:10px; font-weight:bold;">儲存並更新</button>
         </div>
     </div>
 </div>
 
-<div id="cropperModal" class="cropper-modal">
-    <div class="cropper-content">
+<div id="cropModal" class="crop-modal">
+    <div class="crop-box">
         <h3>調整照片範圍</h3>
-        <div id="cropper-instance"></div>
-        <button class="crop-btn" onclick="closeCropper()">取消</button>
-        <button class="crop-btn crop-confirm" onclick="confirmCrop()">好了，就這樣</button>
+        <div id="cropper-target"></div>
+        <button onclick="cancelCrop()" style="padding:10px 20px;">取消</button>
+        <button onclick="finishCrop()" style="padding:10px 20px; background:var(--main-color); color:#fff; border-radius:8px;">確認裁減</button>
     </div>
 </div>
 
-<button style="position:fixed; bottom:20px; right:20px; width:60px; height:60px; border-radius:50%; background:#4A3E3E; color:#fff; font-size:24px;" onclick="addNew()">＋</button>
+<div class="fab" onclick="addNew()">＋</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
-
 <script>
-    let tripData = JSON.parse(localStorage.getItem('mySeoulTrip')) || [{title: '首爾景點', img: ''}];
-    let currentIndex = 0;
-    let croppieInstance = null;
-    let tempImg = "";
+    let tripData = JSON.parse(localStorage.getItem('TripV2')) || [{title:'LowKey Seongsu', time:'14:00', img:'', map:'', desc:''}];
+    let activeIdx = 0;
+    let cropper = null;
+    let tempImgBase64 = "";
 
     function render() {
-        const list = document.getElementById('itinerary-list');
-        list.innerHTML = tripData.map((item, i) => `
+        document.getElementById('list').innerHTML = tripData.map((d, i) => `
             <div class="event-card" onclick="openDetail(${i})">
-                <strong>${item.title}</strong>
+                <div class="time-badge">${d.time}</div>
+                <div class="title-text">${d.title}</div>
             </div>
         `).join('');
     }
 
     function openDetail(i) {
-        currentIndex = i;
-        const item = tripData[i];
-        document.getElementById('viewImg').style.backgroundImage = `url(${item.img})`;
-        document.getElementById('inTitle').value = item.title;
+        activeIdx = i;
+        const d = tripData[i];
+        document.getElementById('vTitle').innerText = d.title;
+        document.getElementById('vTime').innerText = d.time;
+        document.getElementById('vDesc').innerText = d.desc || '尚無筆記';
+        document.getElementById('vMap').href = d.map || '#';
+        document.getElementById('viewImg').style.backgroundImage = d.img ? `url(${d.img})` : 'none';
+        
+        document.getElementById('iTitle').value = d.title;
+        document.getElementById('iTime').value = d.time;
+        document.getElementById('iMap').value = d.map;
+        document.getElementById('iDesc').value = d.desc;
+        tempImgBase64 = d.img;
+
+        document.getElementById('readMode').style.display = 'block';
+        document.getElementById('editMode').style.display = 'none';
         document.getElementById('detailOverlay').style.display = 'block';
-        tempImg = item.img;
     }
 
-    function openCropper(input) {
+    function startCrop(input) {
         if (input.files && input.files[0]) {
             const reader = new FileReader();
             reader.onload = function(e) {
-                document.getElementById('cropperModal').style.display = 'block';
-                // 延遲一點點確保視窗打開
+                document.getElementById('cropModal').style.display = 'block';
                 setTimeout(() => {
-                    const el = document.getElementById('cropper-instance');
-                    if (croppieInstance) croppieInstance.destroy();
-                    croppieInstance = new Croppie(el, {
-                        viewport: { width: 250, height: 160, type: 'square' },
-                        boundary: { width: '100%', height: 250 }
+                    const el = document.getElementById('cropper-target');
+                    if (cropper) cropper.destroy();
+                    cropper = new Croppie(el, {
+                        viewport: { width: 300, height: 200, type: 'square' },
+                        boundary: { width: '100%', height: 280 },
+                        showZoomer: true
                     });
-                    croppieInstance.bind({ url: e.target.result });
+                    cropper.bind({ url: e.target.result });
                 }, 200);
             };
             reader.readAsDataURL(input.files[0]);
         }
     }
 
-    function confirmCrop() {
-        croppieInstance.result('base64').then(base64 => {
-            tempImg = base64;
+    function finishCrop() {
+        cropper.result('base64').then(base64 => {
+            tempImgBase64 = base64;
             document.getElementById('viewImg').style.backgroundImage = `url(${base64})`;
-            closeCropper();
+            cancelCrop();
         });
     }
 
     function saveData() {
-        tripData[currentIndex].title = document.getElementById('inTitle').value;
-        tripData[currentIndex].img = tempImg;
-        localStorage.setItem('mySeoulTrip', JSON.stringify(tripData));
+        tripData[activeIdx] = {
+            title: document.getElementById('iTitle').value,
+            time: document.getElementById('iTime').value,
+            map: document.getElementById('iMap').value,
+            desc: document.getElementById('iDesc').value,
+            img: tempImgBase64
+        };
+        localStorage.setItem('TripV2', JSON.stringify(tripData));
         render();
-        closeDetail();
+        openDetail(activeIdx);
     }
 
     function addNew() {
-        tripData.push({title: '新行程', img: ''});
+        tripData.push({title:'新行程', time:'00:00', img:'', map:'', desc:''});
         render();
         openDetail(tripData.length - 1);
+        enterEdit();
     }
 
-    function closeDetail() { document.getElementById('detailOverlay').style.display = 'none'; }
-    function closeCropper() { document.getElementById('cropperModal').style.display = 'none'; }
+    function enterEdit() {
+        document.getElementById('readMode').style.display = 'none';
+        document.getElementById('editMode').style.display = 'block';
+    }
+    function closeOverlay() { document.getElementById('detailOverlay').style.display = 'none'; }
+    function cancelCrop() { document.getElementById('cropModal').style.display = 'none'; }
 
     render();
 </script>
