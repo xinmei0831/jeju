@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Jeju Planner - Pro Style</title>
+    <title>Jeju Planner - Final Fix</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.css" />
@@ -15,7 +15,7 @@
     <style>
         :root {
             --bg-color: #FAF9F6;
-            --main-brown: #463232; /* 圖12主色 */
+            --main-brown: #463232; 
             --date-bg: #EAE5DC;
             --text-main: #2D3436;
             --naver-green: #03C75A;
@@ -24,14 +24,12 @@
         * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
         body { font-family: 'Noto Sans TC', sans-serif; background: var(--bg-color); color: var(--text-main); margin: 0; padding-bottom: 100px; }
 
-        /* Header 調整 */
         header { background: #fff; padding: 20px 20px 10px; }
         .year-label { 
             font-family: 'Montserrat'; font-size: 0.9rem; font-weight: 800; color: var(--main-brown);
             letter-spacing: 1px; margin-bottom: 15px;
         }
 
-        /* 日期捲軸 - 仿圖12樣式 */
         .date-scroller { display: flex; overflow-x: auto; gap: 12px; padding-bottom: 10px; scrollbar-width: none; }
         .date-scroller::-webkit-scrollbar { display: none; }
         
@@ -41,18 +39,13 @@
             cursor: pointer; transition: 0.3s; border: none;
         }
         .date-item.active { background: var(--main-brown); }
-        
         .date-item span { color: #8E847B; font-weight: 700; }
         .date-item.active span { color: #fff; }
-
         .date-item .d-day { font-size: 0.65rem; margin-bottom: 5px; }
         .date-item .d-num { font-size: 1.6rem; font-family: 'Montserrat'; line-height: 1; margin-bottom: 5px; }
         .date-item .d-week { font-size: 0.65rem; text-transform: uppercase; }
-
-        /* 特殊 PRE-TRIP 標籤樣式 */
         .date-item.pre-trip .d-num { font-size: 1rem; line-height: 1.2; text-align: center; }
 
-        /* 行程卡片 */
         .main { padding: 20px; max-width: 500px; margin: 0 auto; }
         .event-card { 
             background: #fff; border-radius: 20px; padding: 18px; margin-bottom: 12px; 
@@ -62,17 +55,15 @@
         .time-label { font-family: 'Montserrat'; font-size: 0.9rem; font-weight: 700; color: var(--main-brown); min-width: 50px; }
         .event-title { font-size: 1.05rem; font-weight: 700; flex: 1; }
 
-        /* 詳情頁 UI */
         .detail-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 3000; overflow-y: auto; }
         .detail-header-img { width: 100%; height: 35vh; background-size: cover; background-position: center; position: relative; background-color: #EEE; }
-        .back-btn { position: absolute; top: 20px; left: 20px; width: 40px; height: 40px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); cursor: pointer; }
-        .edit-toggle-btn { position: absolute; top: 20px; right: 20px; background: #fff; padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); cursor: pointer; }
+        .back-btn { position: absolute; top: 20px; left: 20px; width: 40px; height: 40px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 10px rgba(0,0,0,0.1); cursor: pointer; z-index: 10; }
+        .edit-toggle-btn { position: absolute; top: 20px; right: 20px; background: #fff; padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; box-shadow: 0 2px 10px rgba(0,0,0,0.1); cursor: pointer; z-index: 10; }
 
         .detail-body { padding: 25px; }
         .detail-body h1 { font-size: 1.6rem; font-weight: 800; margin: 0 0 5px 0; color: var(--main-brown); }
         .view-time { font-family: 'Montserrat'; font-weight: 700; color: #999; margin-bottom: 20px; }
 
-        /* 圖1大綠按鈕 */
         .naver-big-btn {
             display: flex; align-items: center; justify-content: center; gap: 8px;
             background: var(--naver-green); color: #fff; width: 100%; padding: 16px;
@@ -82,26 +73,18 @@
         .info-list { border-top: 1px solid #F0F0F0; padding-top: 20px; }
         .info-item { display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px; color: #666; font-size: 0.95rem; }
 
-        /* --- 3. 裁剪視窗樣式 --- */
+        /* 裁剪 Modal */
         #cropModal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.9); z-index: 5000; padding: 20px;
-            overflow: hidden;
         }
-        .crop-container { 
-            background: #fff; border-radius: 20px; padding: 15px; 
-            width: 100%; max-width: 400px; margin: 50px auto; 
-            position: relative;
-        }
-        #cropTarget { width: 100%; height: 250px; } /* Croppie 實例高度 */
+        .crop-container { background: #fff; border-radius: 20px; padding: 15px; width: 100%; max-width: 400px; margin: 50px auto; }
         .crop-btns { display: flex; gap: 10px; margin-top: 15px; }
         .crop-btns button { flex: 1; padding: 12px; border-radius: 10px; border: none; font-weight: 700; cursor: pointer; }
-        .crop-btns .crop-cancel { background: #eee; color: #555; }
-        .crop-btns .confirm-crop { background: var(--main-brown); color: #fff; }
+        .confirm-crop { background: var(--main-brown); color: #fff; }
 
-        .fab { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background: var(--main-brown); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
+        .fab { position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; background: var(--main-brown); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); cursor: pointer; }
         
-        /* 編輯欄位 */
         .edit-mode { display: none; }
         .edit-group { margin-bottom: 15px; }
         .edit-label { display: block; font-size: 0.75rem; color: #999; margin-bottom: 5px; font-weight: 700; }
@@ -123,7 +106,7 @@
 <div id="detailOverlay" class="detail-overlay">
     <div class="detail-header-img" id="viewImg">
         <div class="back-btn" onclick="closeDetail()">✕</div>
-        <div class="nav-btn edit-toggle-btn" id="toggleBtn" onclick="toggleEditMode()">✎ 編輯行程</div>
+        <div class="edit-toggle-btn" id="toggleBtn" onclick="toggleEditMode()">✎ 編輯行程</div>
     </div>
     <div class="detail-body">
         <div id="readMode">
@@ -148,8 +131,8 @@
         <div id="editMode" class="edit-mode">
             <div class="edit-group">
                 <span class="edit-label">景點照片</span>
-                <button onclick="document.getElementById('fileInput').click()" style="width:100%; padding:10px; border-radius:10px; border:1px dashed #ccc; cursor:pointer;">📷 上傳/更改照片</button>
-                <input type="file" id="fileInput" hidden accept="image/*" onchange="openCropper(this)">
+                <button onclick="document.getElementById('fileInput').click()" style="width:100%; padding:12px; border-radius:10px; border:1px dashed #ccc; cursor:pointer; background:#fff;">📷 上傳/更改照片並裁剪</button>
+                <input type="file" id="fileInput" hidden accept="image/*" onchange="handleFile(this)">
             </div>
             <div class="edit-group"><span class="edit-label">景點名稱</span><input type="text" id="inTitle" class="edit-input"></div>
             <div class="edit-group"><span class="edit-label">時間</span><input type="text" id="inTime" class="edit-input"></div>
@@ -167,7 +150,7 @@
         <h3 style="margin-top:0">裁剪照片</h3>
         <div id="cropTarget"></div>
         <div class="crop-btns">
-            <button class="crop-cancel" onclick="closeCrop()">取消</button>
+            <button onclick="closeCrop()">取消</button>
             <button class="confirm-crop" onclick="finishCrop()">確認裁剪</button>
         </div>
     </div>
@@ -179,9 +162,10 @@
     let currentDay = 1;
     let editingIndex = null;
     let isEditMode = false;
-    let croppieInst = null; // Croppie 實例
-    let tempImgBase64 = ''; // 暫存圖片
+    let croppieInst = null;
+    let tempImgBase64 = '';
 
+    // 資料持久化，版本設為 V5
     let tripData = JSON.parse(localStorage.getItem('jejuProV5')) || {
         0: [{time:'00:00', title:'行前準備', addr:'-', open:'-', phone:'-', img:'', mapUrl:'', desc:'準備清單...'}],
         1: [{time:'10:00', title:'龍頭岩', addr:'濟州市', open:'24H', phone:'-', img:'', mapUrl:'', desc:'地標景點'}],
@@ -216,21 +200,23 @@
 
     function render() {
         const items = tripData[currentDay] || [];
-        document.getElementById('itinerary-list').innerHTML = items.map((item, index) => `
+        const listEl = document.getElementById('itinerary-list');
+        listEl.innerHTML = items.map((item, index) => `
             <div class="event-card" onclick="openDetail(${index})">
                 <div class="time-label">${item.time}</div>
                 <div class="event-title">${item.title}</div>
             </div>
         `).join('');
         
-        // 更新封面圖為當天第一個行程的照片
-        if(items.length > 0 && items[0].img) {
-            document.getElementById('top-hero-img').style.backgroundImage = `url('${items[0].img}')`;
-            document.getElementById('top-loc-name').innerText = items[0].title;
-        } else {
-            document.getElementById('top-hero-img').style.backgroundImage = `none`;
-            document.getElementById('top-loc-name').innerText = "尚未設定";
-        }
+        // 增加排序功能
+        Sortable.create(listEl, { 
+            animation: 150,
+            onEnd: function(evt) {
+                const movedItem = tripData[currentDay].splice(evt.oldIndex, 1)[0];
+                tripData[currentDay].splice(evt.newIndex, 0, movedItem);
+                localStorage.setItem('jejuProV5', JSON.stringify(tripData));
+            }
+        });
     }
 
     function openDetail(index) {
@@ -249,7 +235,7 @@
         mapBtn.href = item.mapUrl || '#';
         mapBtn.style.display = item.mapUrl ? 'flex' : 'none';
 
-        // 填入編輯
+        // 填入編輯框
         document.getElementById('inTitle').value = item.title;
         document.getElementById('inTime').value = item.time;
         document.getElementById('inAddr').value = item.addr;
@@ -271,23 +257,17 @@
         document.getElementById('toggleBtn').innerText = isEditMode ? '✕ 取消' : '✎ 編輯行程';
     }
 
-    // --- 5. 處理圖片裁剪邏輯 ---
-
-    function openCropper(input) {
+    function handleFile(input) {
         if (input.files && input.files[0]) {
             const reader = new FileReader();
             reader.onload = function(e) {
-                // 顯示裁剪視窗
                 document.getElementById('cropModal').style.display = 'block';
-                
-                // 初始化 Croppie
                 if(croppieInst) croppieInst.destroy();
                 croppieInst = new Croppie(document.getElementById('cropTarget'), {
-                    viewport: { width: 300, height: 200 }, // 裁剪框大小
-                    boundary: { width: 320, height: 280 }, // 畫布大小
-                    showZoomer: true // 顯示縮放滑塊
+                    viewport: { width: 300, height: 200 },
+                    boundary: { width: 320, height: 280 },
+                    showZoomer: true
                 });
-                // 載入選取的圖片
                 croppieInst.bind({ url: e.target.result });
             }
             reader.readAsDataURL(input.files[0]);
@@ -295,18 +275,16 @@
     }
 
     function finishCrop() {
-        // 獲取裁剪後的圖片 (Base64)
         croppieInst.result({type:'base64', size:'viewport'}).then(base64 => {
-            tempImgBase64 = base64; // 更新暫存圖片
-            // 直接在詳情頁頂部做預覽
+            tempImgBase64 = base64;
             document.getElementById('viewImg').style.backgroundImage = `url('${base64}')`;
             closeCrop();
         });
     }
 
     function closeCrop() { 
-        document.getElementById('cropModal').style.display = 'none'; 
-        document.getElementById('fileInput').value = ''; // 清空檔案選擇
+        document.getElementById('cropModal').style.display = 'none';
+        document.getElementById('fileInput').value = '';
     }
 
     function saveData() {
@@ -317,7 +295,7 @@
             open: document.getElementById('inOpen').value,
             mapUrl: document.getElementById('inMapUrl').value,
             desc: document.getElementById('inDesc').value,
-            img: tempImgBase64 // 儲存裁剪後的圖片
+            img: tempImgBase64
         };
         localStorage.setItem('jejuProV5', JSON.stringify(tripData));
         openDetail(editingIndex);
