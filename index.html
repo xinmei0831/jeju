@@ -1,152 +1,72 @@
-<!DOCTYPE html>
-<html lang="zh-Hant">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Jeju Planner</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-    <style>
-        :root {
-            --bg-color: #F4F7F9;
-            --header-bg: #5D737E;
-            --text-main: #455A64;
-            --text-sub: #90A4AE;
-            --accent-blue: #B0C4DE;
-            --card-white: #FFFFFF;
-        }
+/* --- 日期下方新區塊樣式 --- */
+.day-info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 15px 15px;
+}
 
-        * { -webkit-tap-highlight-color: transparent; box-sizing: border-box; }
-        body { font-family: 'Noto Sans TC', sans-serif; background: var(--bg-color); color: var(--text-main); margin: 0; padding-bottom: 100px; }
+.day-title-group {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
 
-        header { background: var(--header-bg); padding: 20px 0 15px; position: relative; color: #fff; }
-        
-        .year-label { position: absolute; top: 20px; left: 20px; font-family: 'Montserrat'; font-size: 0.85rem; font-weight: 700; }
-        .app-title { text-align: center; font-family: 'Montserrat', sans-serif; font-size: 1.1rem; font-weight: 700; letter-spacing: 3px; margin: 30px 0 20px; }
+.day-title-group h2 {
+    margin: 0;
+    font-family: 'Montserrat';
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #3E2723; /* 深咖色文字 */
+}
 
-        /* --- 日期樣式修正：正方形方塊 --- */
-        .date-scroller { 
-            display: flex; overflow-x: auto; gap: 10px; padding: 10px 15px; 
-            scrollbar-width: none; 
-        }
-        .date-scroller::-webkit-scrollbar { display: none; }
-        
-        .date-item {
-            /* 設定固定的寬高使其變成正方形 */
-            width: 80px; 
-            height: 80px; 
-            min-width: 80px;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; border: none; background: transparent; 
-            color: rgba(255,255,255,0.5); transition: 0.3s;
-        }
-        .date-item.active {
-            background: rgba(255,255,255,0.2); color: #fff; border-radius: 16px;
-        }
-        .date-item .d-day { font-size: 0.6rem; font-weight: 700; margin-bottom: 2px; opacity: 0.8; }
-        .date-item .d-num { font-size: 1.2rem; font-weight: 700; font-family: 'Montserrat'; line-height: 1; }
-        .date-item .d-week { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; margin-top: 2px; opacity: 0.8; }
+.day-title-group .sub-date {
+    font-size: 1rem;
+    color: #795548;
+    font-weight: 500;
+}
 
-        /* 其他排版保持不變 */
-        .cover-photo { width: 100%; height: 200px; background-image: url('https://images.unsplash.com/photo-1542359649-31e03ad4d92c?auto=format&fit=crop&w=1000&q=80'); background-size: cover; background-position: center; }
-        .main { padding: 20px; max-width: 500px; margin: 0 auto; }
-        .weather-pill { display: flex; align-items: center; justify-content: center; gap: 10px; background: #fff; padding: 10px 25px; border-radius: 50px; margin: -25px auto 25px; font-size: 0.9rem; font-weight: 500; width: fit-content; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 1px solid var(--accent-blue); position: relative; z-index: 10; }
-        .itinerary-container { position: relative; padding-left: 20px; }
-        .itinerary-container::before { content: ''; position: absolute; left: 5px; top: 10px; bottom: 10px; width: 2px; background: var(--accent-blue); opacity: 0.5; }
-        .event-card { background: var(--card-white); border-radius: 20px; padding: 20px; margin-bottom: 15px; display: flex; align-items: center; gap: 15px; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.03); }
-        .drag-handle { position: absolute; left: -20px; top: 50%; transform: translateY(-50%); width: 12px; height: 12px; background: var(--header-bg); border-radius: 50%; border: 2px solid #fff; cursor: grab; z-index: 10; }
-        .time-label { font-family: 'Montserrat'; font-size: 0.9rem; font-weight: 700; min-width: 55px; color: var(--header-bg); }
-        .event-title { font-size: 1.05rem; font-weight: 700; }
-        .detail-view { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 2000; padding: 50px 25px; }
-        .back-btn { font-size: 1.1rem; font-weight: 700; color: var(--header-bg); cursor: pointer; margin-bottom: 30px; display: block; }
-        .fab { position: fixed; bottom: 30px; right: 30px; width: 65px; height: 65px; background: var(--header-bg); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
-    </style>
-</head>
-<body>
+.weather-tag {
+    background: #fff;
+    padding: 6px 15px;
+    border-radius: 50px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    color: #5D4037;
+}
 
-<header>
-    <div class="year-label">2026 MAY</div>
-    <div class="app-title">JEJU PLANNER</div>
-    <div class="date-scroller" id="day-tabs"></div>
-</header>
+/* 封面圖容器 */
+.hero-container {
+    padding: 0 15px;
+    position: relative;
+    margin-bottom: 20px;
+}
 
-<div class="cover-photo"></div>
+.hero-image {
+    width: 100%;
+    height: 220px;
+    background-image: url('https://images.unsplash.com/photo-1538481199705-c710c4e965fc?auto=format&fit=crop&w=1000&q=80');
+    background-size: cover;
+    background-position: center;
+    border-radius: 25px; /* 大圓角 */
+    position: relative;
+}
 
-<div class="main">
-    <div class="weather-pill">
-        <span>☀️ 18.5°C</span> | <span>Jeju Island</span>
-    </div>
-    <div class="itinerary-container" id="itinerary-list"></div>
-</div>
-
-<div id="detailView" class="detail-view"><div class="back-btn" onclick="closeDetail()">✕ CLOSE</div><div id="detailContent"></div></div>
-<div class="fab">＋</div>
-
-<script>
-    let currentDay = 1;
-    const dates = [
-        {day:1, num:13, week:'Mon'},
-        {day:2, num:14, week:'Tue'},
-        {day:3, num:15, week:'Wed'},
-        {day:4, num:16, week:'Thu'},
-        {day:5, num:17, week:'Fri'}
-    ];
-
-    let tripData = JSON.parse(localStorage.getItem('jejuFinal')) || {
-        1: [{time:'10:00', title:'龍頭岩 Yongduam', desc:'濟州市地標。'}],
-        2: [], 3: [], 4: [], 5: []
-    };
-
-    const tabs = document.getElementById('day-tabs');
-    dates.forEach(d => {
-        tabs.innerHTML += `
-            <div class="date-item ${d.day==1?'active':''}" onclick="setDay(${d.day}, this)">
-                <span class="d-day">DAY ${d.day}</span>
-                <span class="d-num">${d.num}</span>
-                <span class="d-week">${d.week}</span>
-            </div>
-        `;
-    });
-
-    const listEl = document.getElementById('itinerary-list');
-    Sortable.create(listEl, {
-        animation: 200, handle: '.drag-handle',
-        onEnd: function() {
-            let newData = [];
-            listEl.querySelectorAll('.event-card').forEach(card => newData.push(JSON.parse(card.dataset.info)));
-            tripData[currentDay] = newData;
-            localStorage.setItem('jejuFinal', JSON.stringify(tripData));
-        }
-    });
-
-    function setDay(day, el) {
-        currentDay = day;
-        document.querySelectorAll('.date-item').forEach(d => d.classList.remove('active'));
-        el.classList.add('active');
-        render();
-    }
-
-    function render() {
-        listEl.innerHTML = tripData[currentDay].map((item, index) => `
-            <div class="event-card" data-info='${JSON.stringify(item)}'>
-                <div class="drag-handle"></div>
-                <div class="time-label" onclick="openDetail(${index})">${item.time}</div>
-                <div class="info-box" onclick="openDetail(${index})">
-                    <div class="event-title">${item.title}</div>
-                </div>
-            </div>
-        `).join('');
-    }
-
-    function openDetail(index) {
-        const item = tripData[currentDay][index];
-        document.getElementById('detailContent').innerHTML = `<h1 style="font-size:2rem">${item.title}</h1><p style="font-size:1.1rem; line-height:1.8">${item.desc}</p>`;
-        document.getElementById('detailView').style.display = 'block';
-    }
-    function closeDetail() { document.getElementById('detailView').style.display = 'none'; }
-    
-    render();
-</script>
-
-</body>
-</html>
+.location-badge {
+    position: absolute;
+    bottom: 15px;
+    left: 15px;
+    background: rgba(0,0,0,0.3);
+    color: #fff;
+    padding: 4px 12px;
+    border-radius: 50px;
+    font-size: 0.8rem;
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
