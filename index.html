@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Jeju Planner - Image Editable</title>
+    <title>Jeju Planner - Final Corrected</title>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
     <style>
@@ -30,40 +30,49 @@
         .date-item.active { background: rgba(255,255,255,0.2); color: #fff; border-radius: 16px; }
         .date-item .d-num { font-size: 1.2rem; font-weight: 700; font-family: 'Montserrat'; }
 
-        /* 行程卡片樣式 */
-        .main { padding: 20px; max-width: 500px; margin: 0 auto; }
-        .event-card { background: var(--card-white); border-radius: 20px; padding: 20px; margin-bottom: 15px; display: flex; align-items: center; gap: 15px; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.03); cursor: pointer; }
-        .time-label { font-family: 'Montserrat'; font-size: 0.9rem; font-weight: 700; color: var(--header-bg); }
-        .event-title { font-size: 1.05rem; font-weight: 700; }
+        /* 天氣標籤回歸 */
+        .day-info-row { display: flex; justify-content: space-between; align-items: center; padding: 25px 20px 15px; }
+        .day-title-group { display: flex; align-items: baseline; gap: 10px; }
+        .day-title-group h2 { margin: 0; font-family: 'Montserrat'; font-size: 1.8rem; font-weight: 800; }
+        .weather-tag { background: #FFFFFF; padding: 6px 14px; border-radius: 50px; display: flex; align-items: center; gap: 6px; font-size: 0.85rem; font-weight: 600; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
 
-        /* --- 詳情頁面新樣式：增加頂部照片區域 --- */
+        /* 首頁封面圖容器 */
+        .hero-container { padding: 0 20px; margin-bottom: 25px; }
+        .hero-image { width: 100%; height: 220px; background-size: cover; background-position: center; border-radius: 28px; position: relative; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .location-badge { position: absolute; bottom: 18px; left: 18px; background: rgba(0, 0, 0, 0.4); color: #fff; padding: 5px 14px; border-radius: 50px; font-size: 0.75rem; backdrop-filter: blur(8px); }
+
+        /* 行程卡片 */
+        .main { padding: 0 20px; max-width: 500px; margin: 0 auto; }
+        .itinerary-container { position: relative; padding-left: 20px; }
+        .itinerary-container::before { content: ''; position: absolute; left: 5px; top: 10px; bottom: 10px; width: 2px; background: var(--accent-blue); opacity: 0.5; }
+        .event-card { background: var(--card-white); border-radius: 20px; padding: 20px; margin-bottom: 15px; display: flex; align-items: center; gap: 15px; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.03); cursor: pointer; }
+        .drag-handle { position: absolute; left: -20px; top: 50%; transform: translateY(-50%); width: 12px; height: 12px; background: var(--header-bg); border-radius: 50%; border: 2px solid #fff; cursor: grab; z-index: 10; }
+        .time-label { font-family: 'Montserrat'; font-size: 0.9rem; font-weight: 700; min-width: 55px; color: var(--header-bg); }
+        .event-title { font-size: 1.05rem; font-weight: 700; flex: 1; }
+
+        /* --- 行程詳情頁 (點進去的地方) --- */
         .detail-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 3000; overflow-y: auto; }
-        
-        /* 這裡是照片放置區 */
-        .detail-header-img { 
-            width: 100%; height: 280px; 
-            background-size: cover; background-position: center; 
-            position: relative; background-color: #eee;
-        }
+        /* 這是在詳情頁裡面的照片區 */
+        .detail-header-img { width: 100%; height: 280px; background-size: cover; background-position: center; position: relative; background-color: #eee; }
         
         .nav-btn { position: absolute; top: 20px; width: 40px; height: 40px; background: rgba(255,255,255,0.8); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; cursor: pointer; backdrop-filter: blur(5px); z-index: 10; }
         .back-btn { left: 20px; }
         .edit-toggle-btn { right: 20px; width: auto; padding: 0 15px; border-radius: 20px; font-weight: 700; font-size: 0.9rem; }
 
         .detail-body { padding: 30px 25px; }
-        .read-mode h1 { font-size: 1.8rem; font-weight: 800; margin: 0 0 10px 0; }
+        .read-mode h1 { font-size: 1.8rem; font-weight: 800; margin: 0 0 5px 0; }
         .view-time { font-family: 'Montserrat'; color: var(--header-bg); font-weight: 600; margin-bottom: 25px; display: block; }
         
-        .info-list { border-top: 1px solid #EEE; padding-top: 20px; }
+        .info-list { border-top: 1px solid #EEE; padding-top: 20px; margin-top: 10px; }
         .info-item { display: flex; align-items: center; gap: 12px; margin-bottom: 15px; color: #636E72; font-size: 0.95rem; }
         .naver-link-btn { background: var(--naver-green); color: #fff; padding: 4px 10px; border-radius: 6px; text-decoration: none; font-size: 0.75rem; font-weight: 700; margin-left: auto; }
 
-        /* 編輯模式樣式 */
+        /* 編輯模式 */
         .edit-mode { display: none; }
         .edit-group { margin-bottom: 15px; }
         .edit-label { display: block; font-size: 0.75rem; color: #95a5a6; margin-bottom: 5px; font-weight: 700; }
-        .edit-input { width: 100%; border: 1px solid #eee; padding: 12px; border-radius: 12px; font-size: 1rem; background: #f9f9f9; font-family: inherit; }
-        .save-btn { width: 100%; background: var(--header-bg); color: #fff; border: none; padding: 16px; border-radius: 15px; font-size: 1rem; font-weight: 700; cursor: pointer; margin-top: 20px; }
+        .edit-input { width: 100%; border: 1px solid #eee; padding: 12px; border-radius: 12px; font-size: 1rem; background: #f9f9f9; }
+        .save-btn { width: 100%; background: var(--header-bg); color: #fff; border: none; padding: 16px; border-radius: 15px; font-size: 1rem; font-weight: 700; cursor: pointer; }
 
         .fab { position: fixed; bottom: 30px; right: 30px; width: 65px; height: 65px; background: var(--header-bg); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); cursor: pointer; }
     </style>
@@ -76,8 +85,20 @@
     <div id="day-tabs" class="date-scroller"></div>
 </header>
 
+<div class="day-info-row">
+    <div class="day-title-group">
+        <h2 id="display-day">DAY 1</h2>
+        <span class="sub-date" id="display-full-date">05-13(週一)</span>
+    </div>
+    <div class="weather-tag"><span>☁️</span> 18.5°C <span style="opacity:0.5">濟州</span></div>
+</div>
+
+<div class="hero-container">
+    <div class="hero-image" id="top-hero-img"><div class="location-badge">📍 <span id="top-loc-name">地點</span></div></div>
+</div>
+
 <div class="main">
-    <div id="itinerary-list"></div>
+    <div id="itinerary-list" class="itinerary-container"></div>
 </div>
 
 <div id="detailOverlay" class="detail-overlay">
@@ -95,39 +116,20 @@
                 <div class="info-item">⏰ <span id="viewOpen">營業時間</span></div>
                 <div class="info-item">📞 <span id="viewPhone">聯絡電話</span></div>
             </div>
-            <div style="margin-top:25px; border-top:1px solid #eee; padding-top:20px;">
-                <b style="display:block; margin-bottom:10px;">景點介紹</b>
-                <p id="viewDesc" style="line-height:1.6; color:#455A64;">描述內容...</p>
-            </div>
+            <div style="margin-top:25px; border-top:1px solid #eee; padding-top:20px;"><b style="display:block; margin-bottom:10px;">景點介紹</b><p id="viewDesc" style="line-height:1.6; color:#455A64;">描述內容...</p></div>
         </div>
         
         <div id="editMode" class="edit-mode">
-            <div class="edit-group">
-                <span class="edit-label">圖片網址 (請貼上圖片連結)</span>
-                <input type="text" id="inImg" class="edit-input" placeholder="https://example.com/image.jpg">
-            </div>
-            <div class="edit-group">
-                <span class="edit-label">景點名稱</span>
-                <input type="text" id="inTitle" class="edit-input">
-            </div>
-            <div class="edit-group">
-                <span class="edit-label">時間</span>
-                <input type="text" id="inTime" class="edit-input">
-            </div>
-            <div class="edit-group">
-                <span class="edit-label">Naver Map 連結</span>
-                <input type="text" id="inMapUrl" class="edit-input">
-            </div>
-            <div class="edit-group">
-                <span class="edit-label">地址 / 營業時間 / 電話</span>
+            <div class="edit-group"><span class="edit-label">詳情頁圖片網址 (點進去看到的照片)</span><input type="text" id="inImg" class="edit-input"></div>
+            <div class="edit-group"><span class="edit-label">景點名稱</span><input type="text" id="inTitle" class="edit-input"></div>
+            <div class="edit-group"><span class="edit-label">時間</span><input type="text" id="inTime" class="edit-input"></div>
+            <div class="edit-group"><span class="edit-label">Naver Map 連結</span><input type="text" id="inMapUrl" class="edit-input"></div>
+            <div class="edit-group"><span class="edit-label">地址 / 營業時間 / 電話</span>
                 <input type="text" id="inAddr" class="edit-input" placeholder="地址" style="margin-bottom:8px">
-                <input type="text" id="inOpen" class="edit-input" placeholder="營業時間" style="margin-bottom:8px">
+                <input type="text" id="inOpen" class="edit-input" placeholder="時間" style="margin-bottom:8px">
                 <input type="text" id="inPhone" class="edit-input" placeholder="電話">
             </div>
-            <div class="edit-group">
-                <span class="edit-label">景點介紹</span>
-                <textarea id="inDesc" class="edit-input" rows="4"></textarea>
-            </div>
+            <div class="edit-group"><span class="edit-label">介紹</span><textarea id="inDesc" class="edit-input" rows="4"></textarea></div>
             <button class="save-btn" onclick="saveData()">儲存更新</button>
         </div>
     </div>
@@ -140,39 +142,59 @@
     let editingIndex = null;
     let isEditMode = false;
 
-    // 初始資料增加 img 欄位
-    let tripData = JSON.parse(localStorage.getItem('jejuDataV2')) || {
-        1: [{time:'10:00', title:'龍頭岩 Yongduam', addr:'濟州市龍頭岩路', open:'24小時', phone:'無', img:'https://images.unsplash.com/photo-1542359649-31e03ad4d92c', mapUrl:'https://naver.me/5vI6v6kG', desc:'龍頭岩是濟州著名的地標。'}],
+    let tripData = JSON.parse(localStorage.getItem('jejuFinalV3')) || {
+        1: [{time:'10:00', title:'龍頭岩', addr:'濟州市龍頭岩路', open:'24小時', phone:'無', img:'https://images.unsplash.com/photo-1542359649-31e03ad4d92c', mapUrl:'https://naver.me/5vI6v6kG', desc:'點進去就能看到照片並編輯了。'}],
         2: [], 3: [], 4: [], 5: []
     };
 
+    const dates = [{day:1,num:13,wk:'Mon',f:'05-13(週一)'},{day:2,num:14,wk:'Tue',f:'05-14(週二)'},{day:3,num:15,wk:'Wed',f:'05-15(週三)'},{day:4,num:16,wk:'Thu',f:'05-16(週四)'},{day:5,num:17,wk:'Fri',f:'05-17(週五)'}];
+    const tabs = document.getElementById('day-tabs');
+    dates.forEach(d => {
+        tabs.innerHTML += `<div class="date-item ${d.day==1?'active':''}" onclick="setDay(${d.day}, this)"><span class="d-num">${d.num}</span></div>`;
+    });
+
+    const listEl = document.getElementById('itinerary-list');
+    Sortable.create(listEl, { animation: 200, handle: '.drag-handle' });
+
+    function setDay(day, el) {
+        currentDay = day;
+        document.querySelectorAll('.date-item').forEach(d => d.classList.remove('active'));
+        el.classList.add('active');
+        const info = dates.find(d => d.day === day);
+        document.getElementById('display-day').innerText = `DAY ${day}`;
+        document.getElementById('display-full-date').innerText = info.f;
+        render();
+    }
+
     function render() {
-        const listEl = document.getElementById('itinerary-list');
         const items = tripData[currentDay] || [];
         listEl.innerHTML = items.map((item, index) => `
             <div class="event-card" onclick="openDetail(${index})">
+                <div class="drag-handle" onclick="event.stopPropagation()"></div>
                 <div class="time-label">${item.time}</div>
                 <div class="event-title">${item.title}</div>
             </div>`).join('');
+        if(items.length > 0) {
+            document.getElementById('top-hero-img').style.backgroundImage = `url('${items[0].img}')`;
+            document.getElementById('top-loc-name').innerText = items[0].title;
+        }
     }
 
     function openDetail(index) {
         editingIndex = index;
         isEditMode = false;
         const item = tripData[currentDay][index];
-        
-        // 閱讀模式填值
-        document.getElementById('viewImg').style.backgroundImage = `url('${item.img || ''}')`;
+        document.getElementById('viewImg').style.backgroundImage = `url('${item.img}')`;
         document.getElementById('viewTitle').innerText = item.title;
         document.getElementById('viewTime').innerText = item.time + ' AM';
         document.getElementById('viewAddr').innerText = item.addr;
         document.getElementById('viewOpen').innerText = item.open;
         document.getElementById('viewPhone').innerText = item.phone;
         document.getElementById('viewDesc').innerText = item.desc;
-        document.getElementById('viewMapLink').href = item.mapUrl || '#';
-
-        // 編輯模式填值
-        document.getElementById('inImg').value = item.img || '';
+        const mapBtn = document.getElementById('viewMapLink');
+        mapBtn.style.display = item.mapUrl ? 'inline-flex' : 'none';
+        mapBtn.href = item.mapUrl;
+        document.getElementById('inImg').value = item.img;
         document.getElementById('inTitle').value = item.title;
         document.getElementById('inTime').value = item.time;
         document.getElementById('inAddr').value = item.addr;
@@ -180,7 +202,6 @@
         document.getElementById('inPhone').value = item.phone;
         document.getElementById('inDesc').value = item.desc;
         document.getElementById('inMapUrl').value = item.mapUrl || '';
-
         document.getElementById('readMode').style.display = 'block';
         document.getElementById('editMode').style.display = 'none';
         document.getElementById('toggleBtn').innerText = '✎ 編輯行程';
@@ -196,8 +217,8 @@
 
     function saveData() {
         tripData[currentDay][editingIndex] = {
-            time: document.getElementById('inTime').value,
             title: document.getElementById('inTitle').value,
+            time: document.getElementById('inTime').value,
             addr: document.getElementById('inAddr').value,
             open: document.getElementById('inOpen').value,
             phone: document.getElementById('inPhone').value,
@@ -205,9 +226,9 @@
             img: document.getElementById('inImg').value,
             mapUrl: document.getElementById('inMapUrl').value
         };
-        localStorage.setItem('jejuDataV2', JSON.stringify(tripData));
+        localStorage.setItem('jejuFinalV3', JSON.stringify(tripData));
+        openDetail(editingIndex);
         render();
-        openDetail(editingIndex); // 重新整理閱讀視窗
     }
 
     function addNewItem() {
@@ -215,17 +236,10 @@
         tripData[currentDay].push({time:'09:00', title:'新景點', addr:'', open:'', phone:'', desc:'', img:'', mapUrl:''});
         render();
         openDetail(tripData[currentDay].length - 1);
-        toggleEditMode(); // 直接進入編輯
+        toggleEditMode();
     }
 
     function closeDetail() { document.getElementById('detailOverlay').style.display = 'none'; }
-
-    // 初始化日期列 (簡化版)
-    const tabs = document.getElementById('day-tabs');
-    [1,2,3,4,5].forEach(d => {
-        tabs.innerHTML += `<div class="date-item ${d==1?'active':''}" onclick="currentDay=${d}; render(); document.querySelectorAll('.date-item').forEach(i=>i.classList.remove('active')); this.classList.add('active');"><span class="d-num">${d+12}</span></div>`;
-    });
-
     render();
 </script>
 </body>
