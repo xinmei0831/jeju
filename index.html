@@ -12,44 +12,21 @@
             --tag-food: #FF9F0A;
             --tag-activity: #30B0C7;
             --tag-transport: #8E8E93;
-            --tag-shopping: #AF52DE;
             --text-main: #1C1C1E;
             --text-sub: #8E8E93;
-            --accent: #FF5A5F;
+            --naver-green: #03C75A;
         }
 
         body { font-family: 'Noto Sans TC', sans-serif; background: var(--bg); color: var(--text-main); margin: 0; padding-bottom: 50px; }
 
-        header {
-            background: var(--card-bg);
-            padding: 40px 0 10px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-
-        .nav-title { text-align: center; font-weight: 700; font-size: 1.1rem; margin-bottom: 15px; letter-spacing: 1px; }
+        header { background: var(--card-bg); padding: 40px 0 10px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .nav-title { text-align: center; font-weight: 700; font-size: 1.1rem; margin-bottom: 15px; }
 
         .date-nav { display: flex; overflow-x: auto; padding: 0 15px; gap: 10px; scrollbar-width: none; }
         .date-nav::-webkit-scrollbar { display: none; }
 
-        .date-btn {
-            min-width: 65px;
-            padding: 10px;
-            background: #F2F2F7;
-            border-radius: 12px;
-            border: none;
-            text-align: center;
-            cursor: pointer;
-            transition: 0.3s;
-        }
-
-        .date-btn .day-label { font-size: 0.65rem; color: var(--text-sub); display: block; }
-        .date-btn .date-num { font-size: 1.1rem; font-weight: 700; }
-
+        .date-btn { min-width: 65px; padding: 10px; background: #F2F2F7; border-radius: 12px; border: none; text-align: center; cursor: pointer; transition: 0.3s; }
         .date-btn.active { background: var(--text-main); color: #fff; }
-        .date-btn.active .day-label { color: rgba(255,255,255,0.7); }
 
         .container { padding: 20px; max-width: 500px; margin: 0 auto; }
         .day-content { display: none; }
@@ -57,190 +34,91 @@
 
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        .day-header { margin-bottom: 20px; position: relative; }
-        .main-img { width: 100%; height: 200px; object-fit: cover; border-radius: 20px; margin-bottom: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .weather-tag {
-            background: rgba(255,255,255,0.9);
-            padding: 5px 12px;
+        /* 天氣 Widget 容器 */
+        .weather-container {
+            background: #fff;
             border-radius: 20px;
-            font-size: 0.8rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
+            margin-bottom: 20px;
+            overflow: hidden;
             border: 1px solid #eee;
-        }
-
-        .event-card {
-            background: var(--card-bg);
-            border-radius: 18px;
-            padding: 15px;
-            margin-bottom: 15px;
-            display: flex;
-            gap: 15px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.03);
         }
 
-        .event-time { font-size: 0.85rem; font-weight: 700; color: var(--text-main); min-width: 50px; }
+        .main-img { width: 100%; height: 180px; object-fit: cover; border-radius: 20px; margin-bottom: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+
+        .event-card { background: var(--card-bg); border-radius: 18px; padding: 18px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+        .event-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+        .event-time { font-size: 0.85rem; font-weight: 700; color: var(--text-sub); }
         
-        .event-info { flex: 1; }
-        .tag {
-            font-size: 0.65rem;
-            font-weight: 700;
-            padding: 2px 8px;
-            border-radius: 6px;
-            color: #fff;
-            margin-bottom: 5px;
-            display: inline-block;
-            text-transform: uppercase;
-        }
+        .tag { font-size: 0.65rem; font-weight: 700; padding: 2px 8px; border-radius: 6px; color: #fff; text-transform: uppercase; }
         .tag-food { background: var(--tag-food); }
         .tag-activity { background: var(--tag-activity); }
         .tag-transport { background: var(--tag-transport); }
-        .tag-shopping { background: var(--tag-shopping); }
 
-        .event-title { font-size: 1rem; font-weight: 500; margin-bottom: 4px; display: block; }
-        .event-desc { font-size: 0.85rem; color: var(--text-sub); line-height: 1.5; }
+        .event-title { font-size: 1.05rem; font-weight: 600; margin-bottom: 8px; display: block; }
+        
+        .map-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--naver-green);
+            border: 1px solid var(--naver-green);
+            padding: 5px 12px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            text-decoration: none;
+            margin-top: 10px;
+            font-weight: 500;
+        }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="nav-title">JEJU TRIP 2026</div>
+    <div class="nav-title">JEJU TRIP</div>
     <div class="date-nav">
-        <button class="date-btn active" onclick="showDay(1, this)">
-            <span class="day-label">DAY 1</span><span class="date-num">5/13</span>
-        </button>
-        <button class="date-btn" onclick="showDay(2, this)">
-            <span class="day-label">DAY 2</span><span class="date-num">5/14</span>
-        </button>
-        <button class="date-btn" onclick="showDay(3, this)">
-            <span class="day-label">DAY 3</span><span class="date-num">5/15</span>
-        </button>
-        <button class="date-btn" onclick="showDay(4, this)">
-            <span class="day-label">DAY 4</span><span class="date-num">5/16</span>
-        </button>
-        <button class="date-btn" onclick="showDay(5, this)">
-            <span class="day-label">DAY 5</span><span class="date-num">5/17</span>
-        </button>
+        <button class="date-btn active" onclick="showDay(1, this)">5/13</button>
+        <button class="date-btn" onclick="showDay(2, this)">5/14</button>
+        <button class="date-btn" onclick="showDay(3, this)">5/15</button>
+        <button class="date-btn" onclick="showDay(4, this)">5/16</button>
+        <button class="date-btn" onclick="showDay(5, this)">5/17</button>
     </div>
 </header>
 
 <div class="container">
+    
+    <div class="weather-container">
+        <a class="weatherwidget-io" href="https://forecast7.com/zh-tw/33d49126d53/jeju-si/" data-label_1="JEJU ISLAND" data-label_2="濟州市 即時天氣" data-font="Noto Sans TC" data-icons="Climacons Animated" data-mode="Current" data-days="3" data-theme="pure" >JEJU ISLAND 濟州市 即時天氣</a>
+        <script>
+        !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src='https://weatherwidget.io/js/widget.min.js';fjs.parentNode.insertBefore(js,fjs);}}(document,'script','weatherwidget-io-js');
+        </script>
+    </div>
+
     <div id="day1" class="day-content active">
-        <div class="day-header">
-            <img src="https://images.unsplash.com/photo-1510618033230-019323735749?auto=format&fit=crop&w=800" class="main-img">
-            <div class="weather-tag">☁️ 10.9°C · 濟州市</div>
-        </div>
+        <img src="https://images.unsplash.com/photo-1510618033230-019323735749?auto=format&fit=crop&w=800" class="main-img">
         <div class="event-card">
-            <div class="event-time">11:00</div>
-            <div class="event-info">
-                <span class="tag tag-transport">Transport</span>
-                <span class="event-title">抵達濟州國際機場</span>
-                <span class="event-desc">開始五天四夜之旅。</span>
-            </div>
-        </div>
-        <div class="event-card">
-            <div class="event-time">14:00</div>
-            <div class="event-info">
+            <div class="event-header">
+                <span class="event-time">14:00</span>
                 <span class="tag tag-activity">Activity</span>
-                <span class="event-title">龍頭岩 & 龍淵吊橋</span>
-                <span class="event-desc">壯觀的海邊奇岩與吊橋美景。</span>
             </div>
+            <span class="event-title">龍頭岩 Yongduam Rock</span>
+            <a href="https://nmap.l.naver.com/view/13491732" target="_blank" class="map-btn">📍 開啟 Naver Map</a>
         </div>
     </div>
 
     <div id="day2" class="day-content">
-        <div class="day-header">
-            <img src="https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=800" class="main-img">
-            <div class="weather-tag">☀️ 12.5°C · 東部行程</div>
-        </div>
+        <img src="https://images.unsplash.com/photo-1542273917363-3b1817f69a2d?auto=format&fit=crop&w=800" class="main-img">
         <div class="event-card">
-            <div class="event-time">09:30</div>
-            <div class="event-info">
+            <div class="event-header">
+                <span class="event-time">09:30</span>
                 <span class="tag tag-activity">Activity</span>
-                <span class="event-title">城山日出峰</span>
-                <span class="event-desc">世界自然遺產，俯瞰濟州東部海岸。</span>
             </div>
-        </div>
-        <div class="event-card">
-            <div class="event-time">13:00</div>
-            <div class="event-info">
-                <span class="tag tag-food">Food</span>
-                <span class="event-title">海女之家</span>
-                <span class="event-desc">品嚐新鮮的海鮮粥與鮑魚料理。</span>
-            </div>
+            <span class="event-title">城山日出峰</span>
+            <a href="https://nmap.l.naver.com/view/13491321" target="_blank" class="map-btn">📍 開啟 Naver Map</a>
         </div>
     </div>
-
-    <div id="day3" class="day-content">
-        <div class="day-header">
-            <img src="https://images.unsplash.com/photo-1533633858022-79010467798a?auto=format&fit=crop&w=800" class="main-img">
-            <div class="weather-tag">🌤️ 14.2°C · 童心世界</div>
-        </div>
-        <div class="event-card">
-            <div class="event-time">10:00</div>
-            <div class="event-info">
-                <span class="tag tag-activity">Activity</span>
-                <span class="event-title">史努比樂園 Snoopy Garden</span>
-                <span class="event-desc">濟州目前最熱門的文青打卡地。</span>
-            </div>
-        </div>
-        <div class="event-card">
-            <div class="event-time">15:30</div>
-            <div class="event-info">
-                <span class="tag tag-activity">Activity</span>
-                <span class="event-title">神話世界主題樂園</span>
-                <span class="event-desc">享受遊樂設施帶來的刺激。</span>
-            </div>
-        </div>
+    
     </div>
-
-    <div id="day4" class="day-content">
-        <div class="day-header">
-            <img src="https://images.unsplash.com/photo-1540206276207-3af25c08abbb?auto=format&fit=crop&w=800" class="main-img">
-            <div class="weather-tag">☀️ 16.0°C · 網美巡禮</div>
-        </div>
-        <div class="event-card">
-            <div class="event-time">11:00</div>
-            <div class="event-info">
-                <span class="tag tag-activity">Activity</span>
-                <span class="event-title">泰迪熊博物館</span>
-                <span class="event-desc">各式經典造型泰迪熊收藏。</span>
-            </div>
-        </div>
-        <div class="event-card">
-            <div class="event-time">14:30</div>
-            <div class="event-info">
-                <span class="tag tag-food">Food</span>
-                <span class="event-title">涯月海邊咖啡街</span>
-                <span class="event-desc">找間海景咖啡廳，享受悠閒時光。</span>
-            </div>
-        </div>
-    </div>
-
-    <div id="day5" class="day-content">
-        <div class="day-header">
-            <img src="https://images.unsplash.com/photo-1531971589569-0d93a595c891?auto=format&fit=crop&w=800" class="main-img">
-            <div class="weather-tag">☁️ 13.8°C · 最後巡禮</div>
-        </div>
-        <div class="event-card">
-            <div class="event-time">10:00</div>
-            <div class="event-info">
-                <span class="tag tag-shopping">Shopping</span>
-                <span class="event-title">蓮洞步行街 / 東門市場</span>
-                <span class="event-desc">最後採買伴手禮與韓國美妝。</span>
-            </div>
-        </div>
-        <div class="event-card">
-            <div class="event-time">16:00</div>
-            <div class="event-info">
-                <span class="tag tag-transport">Transport</span>
-                <span class="event-title">搭機回國 ✈️</span>
-                <span class="event-desc">前往濟州機場，帶著滿滿回憶回家。</span>
-            </div>
-        </div>
-    </div>
-</div>
 
 <script>
     function showDay(dayNum, btn) {
