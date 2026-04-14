@@ -60,13 +60,13 @@
         .time-label { font-family: 'Montserrat'; font-size: 0.9rem; font-weight: 700; min-width: 55px; color: var(--header-bg); }
         .event-title { font-size: 1.05rem; font-weight: 700; flex: 1; }
 
-        .detail-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 3000; overflow-y: auto; }
+        .detail-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #fff; z-index: 3000; overflow-y: auto; -webkit-overflow-scrolling: touch; }
         .detail-header-img { width: 100%; height: 280px; background-size: cover; background-position: center; position: relative; background-color: #eee; }
         .nav-btn { position: absolute; top: 20px; width: 40px; height: 40px; background: rgba(255,255,255,0.8); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; cursor: pointer; backdrop-filter: blur(5px); z-index: 10; }
         .back-btn { left: 20px; }
         .edit-toggle-btn { right: 20px; width: auto; padding: 0 15px; border-radius: 20px; font-weight: 700; font-size: 0.9rem; }
 
-        .detail-body { padding: 30px 25px; }
+        .detail-body { padding: 30px 25px 80px; } /* 增加底部 Padding 防止按鈕點不到 */
         .read-mode h1 { font-size: 1.8rem; font-weight: 800; margin: 0 0 5px 0; }
         .read-mode .view-time { font-family: 'Montserrat'; color: var(--header-bg); font-weight: 600; margin-bottom: 25px; }
         
@@ -84,7 +84,6 @@
         .desc-section b { font-size: 1.1rem; display: block; margin-bottom: 10px; }
         .desc-section p { line-height: 1.8; color: #455A64; }
 
-        /* 裁剪 Modal */
         #cropModal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.85); z-index: 5000; padding: 20px;
@@ -94,16 +93,16 @@
         .crop-btns button { flex: 1; padding: 14px; border-radius: 12px; border: none; font-weight: 700; cursor: pointer; }
         .confirm-crop { background: var(--header-bg); color: #fff; }
 
-        .edit-mode { display: none; }
+        .edit-mode { display: none; padding-bottom: 50px; } /* 編輯模式底部空間 */
         .edit-group { margin-bottom: 15px; }
         .edit-label { display: block; font-size: 0.75rem; color: #95a5a6; margin-bottom: 5px; font-weight: 700; }
-        .edit-input { width: 100%; border: 1px solid #eee; padding: 12px; border-radius: 12px; font-size: 1rem; background: #f9f9f9; }
-        .save-btn { width: 100%; background: var(--header-bg); color: #fff; border: none; padding: 16px; border-radius: 15px; font-size: 1rem; font-weight: 700; cursor: pointer; }
+        .edit-input { width: 100%; border: 1px solid #eee; padding: 12px; border-radius: 12px; font-size: 1rem; background: #f9f9f9; -webkit-appearance: none; }
+        .save-btn { width: 100%; background: var(--header-bg); color: #fff; border: none; padding: 16px; border-radius: 15px; font-size: 1rem; font-weight: 700; cursor: pointer; margin-top: 20px; transition: transform 0.1s; }
+        .save-btn:active { transform: scale(0.98); background: #4a5c65; }
 
-        /* 上傳按鈕樣式 */
         .upload-trigger { width: 100%; background: #fff; border: 2px dashed var(--accent-blue); padding: 15px; border-radius: 12px; color: var(--header-bg); font-weight: 700; cursor: pointer; text-align: center; }
 
-        .fab { position: fixed; bottom: 30px; right: 30px; width: 65px; height: 65px; background: var(--header-bg); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); cursor: pointer; }
+        .fab { position: fixed; bottom: 30px; right: 30px; width: 65px; height: 65px; background: var(--header-bg); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 28px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); cursor: pointer; z-index: 2000; }
     </style>
 </head>
 <body>
@@ -165,7 +164,7 @@
                 <input type="text" id="inPhone" class="edit-input" placeholder="電話">
             </div>
             <div class="edit-group"><span class="edit-label">介紹</span><textarea id="inDesc" class="edit-input" rows="4"></textarea></div>
-            <button class="save-btn" onclick="saveData()">儲存更新</button>
+            <button class="save-btn" onclick="saveData(event)">儲存更新</button>
         </div>
     </div>
 </div>
@@ -188,7 +187,7 @@
     let editingIndex = null;
     let isEditMode = false;
     let croppieInst = null;
-    let tempImgBase64 = ''; // 用於暫存裁剪後的圖片
+    let tempImgBase64 = '';
 
     let tripData = JSON.parse(localStorage.getItem('jejuProV3')) || {
         1: [{time:'10:00', title:'龍頭岩 Yongduam', addr:'濟州市龍頭岩路', open:'24小時', phone:'無', img:'https://images.unsplash.com/photo-1542359649-31e03ad4d92c', mapUrl:'https://naver.me/5vI6v6kG', desc:'龍頭岩是濟州著名的地標景點。'}],
@@ -196,18 +195,23 @@
     };
 
     const dates = [{day:1,num:13,wk:'Mon',f:'05-13(週一)'},{day:2,num:14,wk:'Tue',f:'05-14(週二)'},{day:3,num:15,wk:'Wed',f:'05-15(週三)'},{day:4,num:16,wk:'Thu',f:'05-16(週四)'},{day:5,num:17,wk:'Fri',f:'05-17(週五)'}];
-    const tabs = document.getElementById('day-tabs');
-    dates.forEach(d => {
-        tabs.innerHTML += `<div class="date-item ${d.day==1?'active':''}" onclick="setDay(${d.day}, this)"><span class="d-day">DAY ${d.day}</span><span class="d-num">${d.num}</span><span class="d-week">${d.wk}</span></div>`;
-    });
+    
+    function initTabs() {
+        const tabs = document.getElementById('day-tabs');
+        tabs.innerHTML = '';
+        dates.forEach(d => {
+            tabs.innerHTML += `<div class="date-item ${d.day==currentDay?'active':''}" onclick="setDay(${d.day}, this)"><span class="d-day">DAY ${d.day}</span><span class="d-num">${d.num}</span><span class="d-week">${d.wk}</span></div>`;
+        });
+    }
 
     const listEl = document.getElementById('itinerary-list');
     Sortable.create(listEl, { 
         animation: 200, 
         handle: '.drag-handle',
-        onEnd: function(evt) {
-            const movedItem = tripData[currentDay].splice(evt.oldIndex, 1)[0];
-            tripData[currentDay].splice(evt.newIndex, 0, movedItem);
+        onEnd: function() {
+            const items = Array.from(listEl.querySelectorAll('.event-card'));
+            const newData = items.map(el => tripData[currentDay][el.dataset.index]);
+            tripData[currentDay] = newData;
             localStorage.setItem('jejuProV3', JSON.stringify(tripData));
             render();
         }
@@ -226,15 +230,20 @@
     function render() {
         const items = tripData[currentDay] || [];
         listEl.innerHTML = items.map((item, index) => `
-            <div class="event-card" onclick="openDetail(${index})">
+            <div class="event-card" data-index="${index}" onclick="openDetail(${index})">
                 <div class="drag-handle" onclick="event.stopPropagation()"></div>
                 <div class="time-label">${item.time}</div>
                 <div class="event-title">${item.title}</div>
             </div>`).join('');
         
+        const heroImg = document.getElementById('top-hero-img');
+        const heroLoc = document.getElementById('top-loc-name');
         if(items.length > 0) {
-            document.getElementById('top-hero-img').style.backgroundImage = items[0].img ? `url('${items[0].img}')` : 'none';
-            document.getElementById('top-loc-name').innerText = items[0].title;
+            heroImg.style.backgroundImage = items[0].img ? `url('${items[0].img}')` : 'none';
+            heroLoc.innerText = items[0].title;
+        } else {
+            heroImg.style.backgroundImage = 'none';
+            heroLoc.innerText = '尚無行程';
         }
     }
 
@@ -245,7 +254,7 @@
         
         document.getElementById('viewImg').style.backgroundImage = item.img ? `url('${item.img}')` : 'none';
         document.getElementById('viewTitle').innerText = item.title;
-        document.getElementById('viewTime').innerText = item.time + ' AM';
+        document.getElementById('viewTime').innerText = item.time;
         document.getElementById('viewAddr').innerText = item.addr;
         document.getElementById('viewOpen').innerText = item.open;
         document.getElementById('viewPhone').innerText = item.phone;
@@ -268,6 +277,7 @@
         document.getElementById('editMode').style.display = 'none';
         document.getElementById('toggleBtn').innerText = '✎ 編輯行程';
         document.getElementById('detailOverlay').style.display = 'block';
+        document.getElementById('detailOverlay').scrollTop = 0;
     }
 
     function toggleEditMode() {
@@ -275,9 +285,8 @@
         document.getElementById('readMode').style.display = isEditMode ? 'none' : 'block';
         document.getElementById('editMode').style.display = isEditMode ? 'block' : 'none';
         document.getElementById('toggleBtn').innerText = isEditMode ? '✕ 取消編輯' : '✎ 編輯行程';
+        if(isEditMode) document.getElementById('detailOverlay').scrollTop = 0;
     }
-
-    // --- 圖片處理邏輯 ---
 
     function handleFileSelection(input) {
         if (input.files && input.files[0]) {
@@ -286,8 +295,8 @@
                 document.getElementById('cropModal').style.display = 'block';
                 if(croppieInst) croppieInst.destroy();
                 croppieInst = new Croppie(document.getElementById('cropTarget'), {
-                    viewport: { width: 300, height: 200 }, // 裁剪框大小
-                    boundary: { width: 320, height: 280 }, // 畫布大小
+                    viewport: { width: 300, height: 200 },
+                    boundary: { width: 320, height: 280 },
                     showZoomer: true
                 });
                 croppieInst.bind({ url: e.target.result });
@@ -299,7 +308,6 @@
     function finishCrop() {
         croppieInst.result({type:'base64', size:'viewport'}).then(base64 => {
             tempImgBase64 = base64;
-            // 直接預覽在背景
             document.getElementById('viewImg').style.backgroundImage = `url('${base64}')`;
             closeCrop();
         });
@@ -307,10 +315,11 @@
 
     function closeCrop() { 
         document.getElementById('cropModal').style.display = 'none'; 
-        document.getElementById('fileInput').value = ''; // 清空選擇
+        document.getElementById('fileInput').value = ''; 
     }
 
-    function saveData() {
+    function saveData(e) {
+        if(e) e.preventDefault(); // 防止按鈕預設行為
         tripData[currentDay][editingIndex] = {
             title: document.getElementById('inTitle').value,
             time: document.getElementById('inTime').value,
@@ -318,7 +327,7 @@
             open: document.getElementById('inOpen').value,
             phone: document.getElementById('inPhone').value,
             desc: document.getElementById('inDesc').value,
-            img: tempImgBase64, // 存入 Base64 數據
+            img: tempImgBase64,
             mapUrl: document.getElementById('inMapUrl').value
         };
         localStorage.setItem('jejuProV3', JSON.stringify(tripData));
@@ -328,13 +337,16 @@
 
     function addNewItem() {
         if(!tripData[currentDay]) tripData[currentDay] = [];
-        tripData[currentDay].push({time:'09:00', title:'新行程', addr:'', open:'', phone:'', desc:'', img:'', mapUrl:''});
+        const newItem = {time:'09:00', title:'新景點', addr:'', open:'', phone:'', desc:'', img:'', mapUrl:''};
+        tripData[currentDay].push(newItem);
         render();
         openDetail(tripData[currentDay].length - 1);
         toggleEditMode();
     }
 
     function closeDetail() { document.getElementById('detailOverlay').style.display = 'none'; }
+    
+    initTabs();
     render();
 </script>
 </body>
